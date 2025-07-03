@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<title>Authentication complete</title>
+<p>
+    Authentication is complete. If this window does not close automatically,
+    please close it manually.
+</p>
+<script>
+    // This script sends the full URL (including query parameters) of this page
+    // back to the main application window that opened it.
+    function postAuthenticationMessage() {
+        const message = {
+            'flutter-web-auth-2': window.location.href
+        };
+
+        // Use window.opener for popups, or window.parent for iframes
+        if (window.opener) {
+            window.opener.postMessage(message, window.location.origin);
+            window.close();
+        } else if (window.parent && window.parent !== window) {
+            window.parent.postMessage(message, window.location.origin);
+        } else {
+            // As a fallback for other scenarios
+            localStorage.setItem('flutter-web-auth-2', window.location.href);
+            window.close();
+        }
+    }
+
+    postAuthenticationMessage();
+</script>

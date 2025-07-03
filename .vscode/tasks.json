@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Dashboard",
+			"type": "shell",
+			"command": "flutter",
+			"args": [
+				"run",
+				"-d",
+				"chrome",
+				"--web-port=3000"
+			],
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [
+				"$flutter"
+			]
+		}
+	]
+}

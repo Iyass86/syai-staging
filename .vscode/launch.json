@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter Web (Custom Port)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug", // Or "profile", "release"
+            "program": "lib/main.dart", // Your main entry point
+            "args": [
+                "--web-hostname",
+                "localhost",
+                "--web-port",
+                "8080"
+            ]
+        }
+    ]
+}
