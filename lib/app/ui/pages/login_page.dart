@@ -246,158 +246,158 @@ class LoginPage extends GetView<LoginController> {
             );
           }),
           const SizedBox(height: 16),
-          // Secondary Create Account Button
-          Container(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () => Get.toNamed(AppRoutes.register),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.secondaryContainer,
-                foregroundColor: colorScheme.onSecondaryContainer,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(
-                    color: colorScheme.outline.withOpacity(0.3),
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: Text(
-                'create_account'.tr,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 40),
-          // Elegant Divider
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          colorScheme.outline.withOpacity(0.0),
-                          colorScheme.outline.withOpacity(0.5),
-                          colorScheme.outline.withOpacity(0.0),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
-                    'or'.tr,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withOpacity(0.6),
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.5,
-                        ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          colorScheme.outline.withOpacity(0.0),
-                          colorScheme.outline.withOpacity(0.5),
-                          colorScheme.outline.withOpacity(0.0),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          // Guest Login Button
-          Obx(() {
-            final authController = Get.find<AuthController>();
-            return Container(
-              width: double.infinity,
-              height: 56,
-              child: OutlinedButton.icon(
-                onPressed: authController.isLoading.value
-                    ? null
-                    : controller.loginAsGuest,
-                icon: authController.isLoading.value
-                    ? SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      )
-                    : Icon(
-                        Icons.person_outline_rounded,
-                        color: colorScheme.onSurface.withOpacity(0.8),
-                      ),
-                label: Text(
-                  'continue_as_guest'.tr,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: colorScheme.onSurface.withOpacity(0.8),
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: colorScheme.outline.withOpacity(0.4),
-                    width: 1.5,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  backgroundColor: colorScheme.surface.withOpacity(0.5),
-                ),
-              ),
-            );
-          }),
-          const SizedBox(height: 24),
-          // Guest Mode Notice
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: colorScheme.outline.withOpacity(0.2),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline_rounded,
-                  size: 20,
-                  color: colorScheme.onSurface.withOpacity(0.6),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'guest_mode_notice'.tr,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withOpacity(0.7),
-                          fontSize: 12,
-                          height: 1.4,
-                        ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // // Secondary Create Account Button
+          // Container(
+          //   width: double.infinity,
+          //   height: 56,
+          //   child: ElevatedButton(
+          //     onPressed: () => Get.toNamed(AppRoutes.register),
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: colorScheme.secondaryContainer,
+          //       foregroundColor: colorScheme.onSecondaryContainer,
+          //       elevation: 0,
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(16),
+          //         side: BorderSide(
+          //           color: colorScheme.outline.withOpacity(0.3),
+          //           width: 1,
+          //         ),
+          //       ),
+          //     ),
+          //     child: Text(
+          //       'create_account'.tr,
+          //       style: const TextStyle(
+          //         fontSize: 16,
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(height: 40),
+          // // Elegant Divider
+          // Container(
+          //   margin: const EdgeInsets.symmetric(vertical: 8),
+          //   child: Row(
+          //     children: [
+          //       Expanded(
+          //         child: Container(
+          //           height: 1,
+          //           decoration: BoxDecoration(
+          //             gradient: LinearGradient(
+          //               colors: [
+          //                 colorScheme.outline.withOpacity(0.0),
+          //                 colorScheme.outline.withOpacity(0.5),
+          //                 colorScheme.outline.withOpacity(0.0),
+          //               ],
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //       Padding(
+          //         padding: const EdgeInsets.symmetric(horizontal: 24),
+          //         child: Text(
+          //           'or'.tr,
+          //           style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          //                 color: colorScheme.onSurface.withOpacity(0.6),
+          //                 fontWeight: FontWeight.w500,
+          //                 letterSpacing: 0.5,
+          //               ),
+          //         ),
+          //       ),
+          //       Expanded(
+          //         child: Container(
+          //           height: 1,
+          //           decoration: BoxDecoration(
+          //             gradient: LinearGradient(
+          //               colors: [
+          //                 colorScheme.outline.withOpacity(0.0),
+          //                 colorScheme.outline.withOpacity(0.5),
+          //                 colorScheme.outline.withOpacity(0.0),
+          //               ],
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // const SizedBox(height: 24),
+          // // Guest Login Button
+          // Obx(() {
+          //   final authController = Get.find<AuthController>();
+          //   return Container(
+          //     width: double.infinity,
+          //     height: 56,
+          //     child: OutlinedButton.icon(
+          //       onPressed: authController.isLoading.value
+          //           ? null
+          //           : controller.loginAsGuest,
+          //       icon: authController.isLoading.value
+          //           ? SizedBox(
+          //               height: 20,
+          //               width: 20,
+          //               child: CircularProgressIndicator(
+          //                 strokeWidth: 2,
+          //                 color: colorScheme.onSurface.withOpacity(0.6),
+          //               ),
+          //             )
+          //           : Icon(
+          //               Icons.person_outline_rounded,
+          //               color: colorScheme.onSurface.withOpacity(0.8),
+          //             ),
+          //       label: Text(
+          //         'continue_as_guest'.tr,
+          //         style: TextStyle(
+          //           fontSize: 16,
+          //           fontWeight: FontWeight.w500,
+          //           color: colorScheme.onSurface.withOpacity(0.8),
+          //         ),
+          //       ),
+          //       style: OutlinedButton.styleFrom(
+          //         side: BorderSide(
+          //           color: colorScheme.outline.withOpacity(0.4),
+          //           width: 1.5,
+          //         ),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(16),
+          //         ),
+          //         backgroundColor: colorScheme.surface.withOpacity(0.5),
+          //       ),
+          //     ),
+          //   );
+          // }),
+          // const SizedBox(height: 24),
+          // // Guest Mode Notice
+          // Container(
+          //   padding: const EdgeInsets.all(16),
+          //   decoration: BoxDecoration(
+          //     color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+          //     borderRadius: BorderRadius.circular(12),
+          //     border: Border.all(
+          //       color: colorScheme.outline.withOpacity(0.2),
+          //     ),
+          //   ),
+          //   child: Row(
+          //     children: [
+          //       Icon(
+          //         Icons.info_outline_rounded,
+          //         size: 20,
+          //         color: colorScheme.onSurface.withOpacity(0.6),
+          //       ),
+          //       const SizedBox(width: 12),
+          //       Expanded(
+          //         child: Text(
+          //           'guest_mode_notice'.tr,
+          //           style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          //                 color: colorScheme.onSurface.withOpacity(0.7),
+          //                 fontSize: 12,
+          //                 height: 1.4,
+          //               ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
