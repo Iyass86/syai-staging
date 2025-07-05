@@ -248,7 +248,6 @@ class SnapAuthController extends GetxController {
         }
       }
 
-      saveSnapAuth();
       saveAuthCode(code);
       debugPrint('GetSnapAuth ${getSnapAuth()}');
 
@@ -307,7 +306,6 @@ class SnapAuthController extends GetxController {
       callbackUrlScheme: "https",
       options: const FlutterWebAuth2Options(
         useWebview: true,
-        // Add timeout to prevent hanging (in milliseconds)
         timeout: 300000, // 5 minutes
       ),
     );

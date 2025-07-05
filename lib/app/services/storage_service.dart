@@ -94,11 +94,11 @@ class StorageService {
   }
 
   Future<void> saveSnapAuth(Map<String, dynamic> mapData) async {
-    _box.write("snap_auth_v1", mapData);
+    _box.write("snap_auth_v2", mapData);
   }
 
   Future<Map<String, dynamic>> getSnapAuth() async {
-    return _box.read<Map<String, dynamic>>("snap_auth_v1") ?? {};
+    return _box.read<Map<String, dynamic>>("snap_auth_v2") ?? {};
   }
 
   Future<String> getAuthCode() async {
