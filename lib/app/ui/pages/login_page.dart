@@ -90,7 +90,7 @@ class LoginPage extends GetView<LoginController> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Sign in to continue your conversation',
+                            'sign_in_subtitle'.tr,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium

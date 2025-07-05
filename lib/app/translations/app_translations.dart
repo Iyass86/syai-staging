@@ -247,7 +247,8 @@ class AppTranslations extends Translations {
     'image_shared': 'Image shared',
 
     // Authentication & Forms
-    'welcome_to_oauth_chat': 'Welcome to OAuth Chat',
+    'welcome_to_oauth_chat': 'Welcome to SyAi',
+    'sign_in_subtitle': 'Sign in to access your AI-powered marketing dashboard',
     'password': 'Password',
     'login_with_email': 'Login with Email',
     'create_account': 'Create an Account',
@@ -558,7 +559,9 @@ class AppTranslations extends Translations {
     'image_shared': 'تم مشاركة الصورة',
 
     // Authentication & Forms
-    'welcome_to_oauth_chat': 'مرحباً بك في OAuth Chat',
+    'welcome_to_oauth_chat': 'مرحباً بك في SyAi',
+    'sign_in_subtitle':
+        'قم بتسجيل الدخول للوصول إلى لوحة التحكم التسويقية المدعومة بالذكاء الاصطناعي',
     'password': 'كلمة المرور',
     'login_with_email': 'تسجيل الدخول بالبريد الإلكتروني',
     'create_account': 'إنشاء حساب',
