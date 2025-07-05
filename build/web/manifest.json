@@ -1,13 +1,17 @@
 {
-    "name": "syai_app",
-    "short_name": "syai_app",
+    "name": "SyAi - Revolutionary AI Assistant",
+    "short_name": "SyAi",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1976d2",
+    "theme_color": "#1976d2",
+    "description": "Transform your productivity with SyAi's intelligent AI assistant. Streamline workflows, automate tasks, and unlock new possibilities with cutting-edge artificial intelligence.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
+    "categories": ["productivity", "business", "utilities"],
+    "lang": "en",
+    "scope": "/",
+    "id": "syai-app",
     "icons": [
         {
             "src": "icons/Icon-192.png",
@@ -30,6 +34,52 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "New Chat",
+            "short_name": "Chat",
+            "description": "Start a new conversation with SyAi",
+            "url": "/?action=new-chat",
+            "icons": [
+                {
+                    "src": "icons/chat-icon.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Dashboard",
+            "short_name": "Dashboard",
+            "description": "Access your SyAi dashboard",
+            "url": "/?action=dashboard",
+            "icons": [
+                {
+                    "src": "icons/dashboard-icon.png",
+                    "sizes": "96x96"
+                }
+            ]
         }
     ]
 }
