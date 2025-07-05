@@ -422,7 +422,7 @@ class SnapAuthController extends GetxController {
       debugPrint('Authorization code extracted from callback: $code');
       update();
       // Automatically generate access token
-      await generateAccessToken();
+      // await generateAccessToken();
     } catch (e) {
       _showErrorMessage('Failed to process OAuth callback: $e');
       debugPrint('OAuth callback processing error: $e');

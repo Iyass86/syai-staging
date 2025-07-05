@@ -14,21 +14,22 @@ class SnapOAuthCallbackPage extends StatefulWidget {
 class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
   late final SnapAuthController _snapAuthController;
   bool _isProcessing = true;
+  bool _isLoading = true;
   String _statusMessage = 'Processing Snapchat authentication...';
   String _detailMessage = 'Please wait while we complete your Snapchat login.';
   bool _hasError = false;
-
+  SnapAuthController get snapAuthController => Get.find<SnapAuthController>();
+  String currentUrl = '';
   @override
   void initState() {
     super.initState();
-    _snapAuthController = Get.find<SnapAuthController>();
     //_handleSnapCallback();
   }
 
   Future<void> _handleSnapCallback() async {
     try {
       // Get the current URL
-      final currentUrl = html.window.location.href;
+      currentUrl = html.window.location.href;
 
       // Use the controller's callback handler
       await _snapAuthController.handleOAuthCallback(currentUrl);
@@ -67,23 +68,6 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
 
   void _goToDashboard() {
     Get.offAllNamed(AppRoutes.dashboard);
-  }
-
-  void _passCodeToLocalhost() async {
-    try {
-      // Get the current URL to extract the code parameter
-      final currentUrl = html.window.location.href;
-      final uri = Uri.parse(currentUrl);
-      final code = uri.queryParameters['code'] ?? '';
-
-      // Construct the localhost URL with the code
-      final localhostUrl = 'http://localhost:8080?code=$code';
-
-      // Open the localhost URL in a new tab/window
-      html.window.open(localhostUrl, '_blank');
-    } catch (e) {
-      debugPrint('Error passing code to localhost: $e');
-    }
   }
 
   @override
@@ -188,9 +172,27 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
                   if (!_isProcessing && !_hasError) ...[
                     const SizedBox(height: 32),
                     ElevatedButton.icon(
-                      onPressed: _passCodeToLocalhost,
-                      icon: const Icon(Icons.send),
-                      label: const Text('Pass Code to Localhost'),
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await _snapAuthController.generateAccessToken();
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            },
+                      icon: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.send),
+                      label: Text(_isLoading
+                          ? 'Processing...'
+                          : 'Pass Code to Localhost'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             Theme.of(context).colorScheme.secondary,
