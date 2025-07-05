@@ -19,7 +19,7 @@ class SnapAuthController extends GetxController {
   // CONSTANTS & DEFAULT VALUES
   // ===============================
   static const String _defaultRedirectUri =
-      'https://fce3-213-6-133-123.ngrok-free.app/snap_callback.html';
+      'https://syai-staging.onrender.com/snap_callback.html';
   static const String _defaultClientId = '03124e03-2fe7-4a74-a5d2-476d94fe1c8f';
   static const String _defaultClientSecret = '7b3364d56eceb31ed325';
 
