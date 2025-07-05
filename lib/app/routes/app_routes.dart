@@ -7,6 +7,7 @@ abstract class AppRoutes {
   static const login = '/login';
   static const register = '/register';
   static const oauthCallback = '/auth/callback';
+  static const snapOauthCallback = '/auth/snap/callback';
 
   // Feature Routes
   static const chat = '/chat';

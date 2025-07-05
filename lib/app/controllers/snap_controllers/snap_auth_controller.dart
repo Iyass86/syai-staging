@@ -18,7 +18,8 @@ class SnapAuthController extends GetxController {
   // ===============================
   // CONSTANTS & DEFAULT VALUES
   // ===============================
-  static const String _defaultRedirectUri = 'https://syai.io';
+  static const String _defaultRedirectUri =
+      'https://syai-staging.onrender.com/snap_callback.html';
   static const String _defaultClientId = 'ca3801b8-b4e6-4e0e-9833-301ce03e640d';
   static const String _defaultClientSecret = '1f1f5d4a1f8aae27b0dc';
 
@@ -118,6 +119,29 @@ class SnapAuthController extends GetxController {
       debugPrint('Invalid URL format: $url - Error: $e');
       return null;
     }
+  }
+
+  /// Extract authorization code from callback URL
+  /// This method can be used by the callback page to extract the code
+  String? extractAuthorizationCodeFromUrl(String callbackUrl) {
+    return extractQueryParameter(callbackUrl, 'code');
+  }
+
+  /// Extract state parameter from callback URL for CSRF validation
+  String? extractStateFromUrl(String callbackUrl) {
+    return extractQueryParameter(callbackUrl, 'state');
+  }
+
+  /// Extract error information from callback URL
+  Map<String, String?> extractErrorFromUrl(String callbackUrl) {
+    final uri = Uri.tryParse(callbackUrl);
+    if (uri == null) return {};
+
+    return {
+      'error': uri.queryParameters['error'],
+      'error_description': uri.queryParameters['error_description'],
+      'error_uri': uri.queryParameters['error_uri'],
+    };
   }
 
   // ===============================
@@ -358,7 +382,57 @@ class SnapAuthController extends GetxController {
   SnapRepository get snapRepository => _snapRepository;
   // ===============================
   // OAUTH FLOW METHODS
-  // ===============================  /// Initiates the OAuth authorization flow for Snapchat Ads API
+  // ===============================
+  /// Handle OAuth callback from the callback page
+  Future<void> handleOAuthCallback(String callbackUrl) async {
+    try {
+      // Extract parameters from callback URL
+      final code = extractAuthorizationCodeFromUrl(callbackUrl);
+      final state = extractStateFromUrl(callbackUrl);
+      final errorInfo = extractErrorFromUrl(callbackUrl);
+
+      // Check for OAuth errors
+      if (errorInfo['error'] != null) {
+        final error = errorInfo['error']!;
+        final errorDescription =
+            errorInfo['error_description'] ?? 'Unknown error';
+        _showErrorMessage('OAuth Error: $error - $errorDescription');
+        debugPrint('OAuth error: $error - $errorDescription');
+        return;
+      }
+
+      // Validate authorization code
+      if (code == null || code.isEmpty) {
+        _showErrorMessage('Authorization code not found in callback URL');
+        return;
+      }
+
+      // Validate state parameter if present (CSRF protection)
+      if (state != null && state.isNotEmpty) {
+        final storedState = await _storageService.getCsrfState();
+        if (storedState != null && storedState != state) {
+          _showErrorMessage('Invalid state parameter - possible CSRF attack');
+          debugPrint('State mismatch: expected $storedState, got $state');
+          return;
+        }
+      }
+
+      // Fill the authorization code in the form
+      urlCodeController.text = code;
+      debugPrint('Authorization code extracted from callback: $code');
+
+      // Automatically generate access token
+      await generateAccessToken();
+
+      // Navigation will be handled by generateAccessToken method
+      _showSuccessMessage('OAuth callback processed successfully');
+    } catch (e) {
+      _showErrorMessage('Failed to process OAuth callback: $e');
+      debugPrint('OAuth callback processing error: $e');
+    }
+  }
+
+  /// Initiates the OAuth authorization flow for Snapchat Ads API
   Future<void> initiateOAuthFlow() async {
     try {
       final state = AppConstants.generateState();
@@ -412,7 +486,11 @@ class SnapAuthController extends GetxController {
     return await FlutterWebAuth2.authenticate(
       url: authUrl.toString(),
       callbackUrlScheme: "https",
-      options: const FlutterWebAuth2Options(useWebview: true),
+      options: const FlutterWebAuth2Options(
+        useWebview: true,
+        // Add timeout to prevent hanging (in milliseconds)
+        timeout: 300000, // 5 minutes
+      ),
     );
   }
 

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapchat OAuth Callback</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, #FFFC00, #FF9900);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .status {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .error {
+            color: #e74c3c;
+        }
+        .success {
+            color: #27ae60;
+        }
+        .retry-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .retry-btn:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📱</div>
+        <div id="status" class="status">Processing...</div>
+        <div id="message" class="message">Completing your Snapchat authentication...</div>
+        <div id="spinner" class="spinner"></div>
+        <div id="actions" style="display: none;">
+            <a href="/snap_auth" class="retry-btn">Try Again</a>
+        </div>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        function getUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                code: urlParams.get('code'),
+                state: urlParams.get('state'),
+                error: urlParams.get('error'),
+                error_description: urlParams.get('error_description')
+            };
+        }
+
+        // Handle the OAuth callback
+        function handleCallback() {
+            const params = getUrlParams();
+            const statusEl = document.getElementById('status');
+            const messageEl = document.getElementById('message');
+            const spinnerEl = document.getElementById('spinner');
+            const actionsEl = document.getElementById('actions');
+
+            // Check for errors
+            if (params.error) {
+                statusEl.textContent = 'Authentication Failed';
+                statusEl.className = 'status error';
+                spinnerEl.style.display = 'none';
+                actionsEl.style.display = 'block';
+
+                let errorMessage = 'An error occurred during authentication.';
+                switch (params.error) {
+                    case 'access_denied':
+                        errorMessage = 'You denied access to your Snapchat account.';
+                        break;
+                    case 'invalid_request':
+                        errorMessage = 'Invalid request parameters.';
+                        break;
+                    case 'invalid_client':
+                        errorMessage = 'Invalid client credentials.';
+                        break;
+                    case 'invalid_scope':
+                        errorMessage = 'Invalid scope requested.';
+                        break;
+                    case 'server_error':
+                        errorMessage = 'Server error occurred. Please try again.';
+                        break;
+                    case 'temporarily_unavailable':
+                        errorMessage = 'Service temporarily unavailable.';
+                        break;
+                    default:
+                        errorMessage = params.error_description || errorMessage;
+                }
+
+                messageEl.textContent = errorMessage;
+                messageEl.className = 'message error';
+                return;
+            }
+
+            // Check for authorization code
+            if (!params.code) {
+                statusEl.textContent = 'No Authorization Code';
+                statusEl.className = 'status error';
+                messageEl.textContent = 'The authorization code was not found in the callback URL.';
+                messageEl.className = 'message error';
+                spinnerEl.style.display = 'none';
+                actionsEl.style.display = 'block';
+                return;
+            }
+
+            // Success - redirect to the Flutter app's callback handler
+            statusEl.textContent = 'Success!';
+            statusEl.className = 'status success';
+            messageEl.textContent = 'Redirecting to complete authentication...';
+            messageEl.className = 'message success';
+
+            // Redirect to Flutter app's callback page with the parameters
+            const callbackUrl = `${window.location.origin}/auth/snap/callback${window.location.search}`;
+            
+            setTimeout(() => {
+                window.location.href = callbackUrl;
+            }, 1000);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', handleCallback);
+    </script>
+</body>
+</html>

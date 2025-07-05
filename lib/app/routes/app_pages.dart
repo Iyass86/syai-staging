@@ -2,6 +2,7 @@ import 'package:flutter_oauth_chat/app/ui/pages/snap_accounts_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_auth_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/social_media_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_organizations_page.dart';
+import 'package:flutter_oauth_chat/app/ui/pages/snap_oauth_callback_page.dart';
 import 'package:get/get.dart';
 
 // Feature pages
@@ -62,6 +63,11 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.oauthCallback,
       page: () => const OAuthCallbackPage(),
+      // No auth guard for callback page as it's part of auth flow
+    ),
+    GetPage(
+      name: AppRoutes.snapOauthCallback,
+      page: () => const SnapOAuthCallbackPage(),
       // No auth guard for callback page as it's part of auth flow
     ),
     GetPage(
