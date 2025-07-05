@@ -161,28 +161,23 @@ class SnapAuthPage extends GetView<SnapAuthController> {
                 validator: (value) => _requiredValidator(value, 'url'.tr),
                 colorScheme: colorScheme,
               ),
-              const SizedBox(height: 24),
 
-              // Redirect URI Field
-              _buildFormField(
-                controller: controller.urlCodeController,
-                labelText: 'redirect_uri'.tr,
-                hintText: 'enter_redirect_uri_code'.tr,
-                prefixIcon: Icons.code_outlined,
-                onChanged: (String? enteredUrl) {
-                  final String? code =
-                      controller.extractQueryParameter(enteredUrl, 'code');
-                  controller.urlCodeController.text = code ?? '';
-                  return null;
-                },
-                validator: (value) =>
-                    _requiredValidator(value, 'redirect_uri'.tr),
-                colorScheme: colorScheme,
-              ),
-              const SizedBox(height: 32),
-
-              // Submit Button
-              _buildSubmitButton(),
+              // // Redirect URI Field
+              // _buildFormField(
+              //   controller: controller.urlCodeController,
+              //   labelText: 'redirect_uri'.tr,
+              //   hintText: 'enter_redirect_uri_code'.tr,
+              //   prefixIcon: Icons.code_outlined,
+              //   onChanged: (String? enteredUrl) {
+              //     final String? code =
+              //         controller.extractQueryParameter(enteredUrl, 'code');
+              //     controller.urlCodeController.text = code ?? '';
+              //     return null;
+              //   },
+              //   validator: (value) =>
+              //       _requiredValidator(value, 'redirect_uri'.tr),
+              //   colorScheme: colorScheme,
+              // ),
             ],
           ),
         );
@@ -237,57 +232,6 @@ class SnapAuthPage extends GetView<SnapAuthController> {
       return '$fieldName ${'is_required'.tr}';
     }
     return null;
-  }
-
-  Widget _buildSubmitButton() {
-    return Builder(
-      builder: (context) {
-        final colorScheme = Theme.of(context).colorScheme;
-
-        return Obx(() {
-          return Container(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                elevation: controller.isLoading.value ? 0 : 2,
-                shadowColor: colorScheme.primary.withOpacity(0.3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              onPressed: controller.isLoading.value
-                  ? null
-                  : () => _validateAndSubmit(),
-              child: controller.isLoading.value
-                  ? SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: colorScheme.onPrimary,
-                      ),
-                    )
-                  : Text(
-                      'connect_account'.tr,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
-          );
-        });
-      },
-    );
-  }
-
-  void _validateAndSubmit() {
-    if (controller.formKey.currentState?.validate() ?? false) {
-      controller.generateAccessToken();
-    }
   }
 
   Widget _buildDivider() {
@@ -373,7 +317,7 @@ class SnapAuthPage extends GetView<SnapAuthController> {
                       color: colorScheme.onSecondaryContainer,
                     ),
               label: Text(
-                'get_code_oauth'.tr,
+                'connect_account'.tr,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
