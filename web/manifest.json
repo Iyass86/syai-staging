@@ -1,11 +1,11 @@
 {
-    "name": "syai_app",
-    "short_name": "syai_app",
+    "name": "SyAi",
+    "short_name": "SyAi",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "SyAi - Your Revolutionary AI Assistant",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -36,8 +36,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     return GetBuilder<ThemeController>(
       builder: (themeController) => GetBuilder<LanguageController>(
         builder: (languageController) => GetMaterialApp(
-          title: 'app_title'.tr,
-          initialRoute: AppRoutes.dashboard,
+          title: 'SyAi - Revolutionary AI Assistant',
+          initialRoute: AppRoutes.login,
           getPages: AppPages.routes,
           unknownRoute: GetPage(
             name: AppRoutes.notFound,
