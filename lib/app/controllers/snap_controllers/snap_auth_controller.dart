@@ -13,8 +13,8 @@ import 'package:flutter_oauth_chat/app/utils/constants.dart';
 class SnapAuthController extends GetxController {
   static SnapAuthController get to => Get.find();
 
-  // static const String _defaultRedirectUri =
-  //     'https://syai-staging.onrender.com/snap_callback.html';
+  static const String defaultRedirectUri =
+      'https://syai-staging.onrender.com/snap_callback.html';
   // static const String _defaultClientId = 'a29cb8b0-bec3-4137-95cc-9a51707d764a';
   // static const String _defaultClientSecret = '5762ac2e4a3637b968fd';
   static const String _defaultGrantType = 'authorization_code';
