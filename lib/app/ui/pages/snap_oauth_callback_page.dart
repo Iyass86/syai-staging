@@ -23,7 +23,7 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
   @override
   void initState() {
     super.initState();
-    //_handleSnapCallback();
+    _handleSnapCallback();
   }
 
   Future<void> _handleSnapCallback() async {
