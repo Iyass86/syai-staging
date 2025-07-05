@@ -282,7 +282,8 @@ class SnapAuthController extends GetxController {
 
       await _storageService.saveSnapToken(tokenResponse.toJson());
       update();
-
+      print(
+          'Access token generated successfully: ${tokenResponse.accessToken}');
       // Build and save AdsManager to storage service before database operations
       final adsManager = _buildAdsManagerModel(tokenResponse);
       await _storageService.saveAdsManager(adsManager.toJson());
