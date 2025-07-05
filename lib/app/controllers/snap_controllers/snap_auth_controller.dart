@@ -15,8 +15,6 @@ class SnapAuthController extends GetxController {
 
   static const String defaultRedirectUri =
       'https://syai-staging.onrender.com/snap_callback.html';
-  // static const String _defaultClientId = 'a29cb8b0-bec3-4137-95cc-9a51707d764a';
-  // static const String _defaultClientSecret = '5762ac2e4a3637b968fd';
   static const String _defaultGrantType = 'authorization_code';
 
   final TextEditingController clientIdController = TextEditingController();
@@ -261,6 +259,11 @@ class SnapAuthController extends GetxController {
 
   Future<void> initiateOAuthFlow() async {
     try {
+      if (clientIdController.text.isEmpty ||
+          clientSecretController.text.isEmpty) {
+        _showErrorMessage('Please fill in all required fields');
+        return;
+      }
       saveSnapAuth();
       final state = AppConstants.generateState();
       await _storageService.saveCsrfState(state);
