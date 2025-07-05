@@ -20,8 +20,8 @@ class SnapAuthController extends GetxController {
   // ===============================
   static const String _defaultRedirectUri =
       'https://syai-staging.onrender.com/snap_callback.html';
-  static const String _defaultClientId = 'ca3801b8-b4e6-4e0e-9833-301ce03e640d';
-  static const String _defaultClientSecret = '1f1f5d4a1f8aae27b0dc';
+  static const String _defaultClientId = 'ba9686e8-3235-43e4-b597-47e8480055b8';
+  static const String _defaultClientSecret = '8847389e2bb2c5d4db43';
 
   static const String _defaultGrantType = 'authorization_code';
 
