@@ -11,8 +11,15 @@ class SnapOAuthCallbackPage extends StatefulWidget {
   State<SnapOAuthCallbackPage> createState() => _SnapOAuthCallbackPageState();
 }
 
-class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
+class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
+    with TickerProviderStateMixin {
   late final SnapAuthController _snapAuthController;
+  late AnimationController _pulseController;
+  late AnimationController _fadeController;
+  late Animation<double> _pulseAnimation;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+  
   bool _isProcessing = true;
   String _statusMessage = 'Processing Snapchat authentication...';
   String _detailMessage = 'Please wait while we complete your Snapchat login.';
