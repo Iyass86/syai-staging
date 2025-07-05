@@ -133,17 +133,18 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              const Color(0xFFFFFC00).withOpacity(0.1), // Snapchat yellow
-              Colors.white,
-              Colors.white,
+              Color(0xFFFFFC00), // Snapchat yellow
+              Color(0xFFFF6B6B), // Coral pink
+              Color(0xFF4ECDC4), // Turquoise
+              Color(0xFF6C5CE7), // Purple
             ],
+            stops: [0.0, 0.3, 0.7, 1.0],
           ),
         ),
         child: SafeArea(
@@ -154,71 +155,83 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
                 position: _slideAnimation,
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 24),
-                  constraints: const BoxConstraints(maxWidth: 400),
-                  child: Card(
-                    elevation: 8,
-                    shadowColor: Colors.black.withOpacity(0.1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
+                  constraints: const BoxConstraints(maxWidth: 380),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(32),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.8),
+                          blurRadius: 20,
+                          offset: const Offset(0, -5),
+                        ),
+                      ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Snapchat Logo/Icon
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFFC00),
-                              borderRadius: BorderRadius.circular(16),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(32),
+                      child: Container(
+                        padding: const EdgeInsets.all(40),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Animated Snapchat Ghost
+                            _buildSnapchatGhost(),
+                            const SizedBox(height: 32),
+
+                            // Status Icon with Animation
+                            _buildStatusIcon(),
+                            const SizedBox(height: 24),
+
+                            // Status Message
+                            Text(
+                              _statusMessage,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: _hasError
+                                        ? const Color(0xFFFF6B6B)
+                                        : const Color(0xFF2C3E50),
+                                  ),
+                              textAlign: TextAlign.center,
                             ),
-                            child: Icon(
-                              Icons.snapchat,
-                              size: 32,
-                              color: Colors.black,
+                            const SizedBox(height: 12),
+
+                            // Detail Message
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Text(
+                                _detailMessage,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Colors.grey[700],
+                                      height: 1.5,
+                                      fontSize: 14,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 24),
 
-                          // Status Icon with Animation
-                          _buildStatusIcon(),
-                          const SizedBox(height: 24),
+                            const SizedBox(height: 32),
 
-                          // Status Message
-                          Text(
-                            _statusMessage,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: _hasError
-                                      ? Colors.red[700]
-                                      : Colors.grey[800],
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Detail Message
-                          Text(
-                            _detailMessage,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  color: Colors.grey[600],
-                                  height: 1.5,
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-
-                          const SizedBox(height: 32),
-
-                          // Action Buttons
-                          _buildActionButtons(),
-                        ],
+                            // Action Buttons
+                            _buildActionButtons(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -231,67 +244,158 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
     );
   }
 
+  Widget _buildSnapchatGhost() {
+    return AnimatedBuilder(
+      animation: _pulseAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _isProcessing ? _pulseAnimation.value : 1.0,
+          child: Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(40),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFFFFC00).withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Outer ring
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFFFFFC00),
+                      width: 3,
+                    ),
+                  ),
+                ),
+                // Inner ghost icon
+                const Icon(
+                  Icons.adb_outlined,
+                  size: 40,
+                  color: Color(0xFFFFFC00),
+                ),
+                // Small floating dots
+                if (_isProcessing) ...[
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF4ECDC4),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 12,
+                    left: 12,
+                    child: Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFF6B6B),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildStatusIcon() {
     if (_hasError) {
       return Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.red.withOpacity(0.1),
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFFFF6B6B).withOpacity(0.1),
+              const Color(0xFFFF6B6B).withOpacity(0.05),
+            ],
+          ),
           border: Border.all(
-            color: Colors.red.withOpacity(0.2),
+            color: const Color(0xFFFF6B6B).withOpacity(0.3),
             width: 2,
           ),
         ),
-        child: Icon(
-          Icons.error_outline,
-          size: 48,
-          color: Colors.red[700],
+        child: const Icon(
+          Icons.error_outline_rounded,
+          size: 40,
+          color: Color(0xFFFF6B6B),
         ),
       );
     } else if (_isProcessing) {
-      return AnimatedBuilder(
-        animation: _pulseAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _pulseAnimation.value,
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFFFFC00).withOpacity(0.1),
-                border: Border.all(
-                  color: const Color(0xFFFFFC00).withOpacity(0.3),
-                  width: 2,
-                ),
-              ),
-              child: const SizedBox(
-                width: 48,
-                height: 48,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFFFC00)),
-                ),
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFFFFFC00).withOpacity(0.1),
+              const Color(0xFF4ECDC4).withOpacity(0.05),
+            ],
+          ),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                backgroundColor: Colors.grey[200],
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(Color(0xFF4ECDC4)),
               ),
             ),
-          );
-        },
+            const Icon(
+              Icons.autorenew_rounded,
+              size: 20,
+              color: Color(0xFF4ECDC4),
+            ),
+          ],
+        ),
       );
     } else {
       return Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.green.withOpacity(0.1),
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFF00D4AA).withOpacity(0.1),
+              const Color(0xFF00D4AA).withOpacity(0.05),
+            ],
+          ),
           border: Border.all(
-            color: Colors.green.withOpacity(0.2),
+            color: const Color(0xFF00D4AA).withOpacity(0.3),
             width: 2,
           ),
         ),
-        child: Icon(
-          Icons.check_circle_outline,
-          size: 48,
-          color: Colors.green[700],
+        child: const Icon(
+          Icons.check_circle_outline_rounded,
+          size: 40,
+          color: Color(0xFF00D4AA),
         ),
       );
     }
@@ -301,81 +405,140 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
     if (_hasError) {
       return Column(
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: _retryAuthentication,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFFC00),
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
+          _buildGradientButton(
+            onPressed: _retryAuthentication,
+            icon: Icons.refresh_rounded,
+            label: 'Try Again',
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFFC00), Color(0xFFFF6B6B)],
             ),
+            textColor: Colors.white,
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: _goToDashboard,
-              icon: const Icon(Icons.home),
-              label: const Text('Go to Dashboard'),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                side: BorderSide(color: Colors.grey[300]!),
-              ),
-            ),
+          const SizedBox(height: 16),
+          _buildGlassButton(
+            onPressed: _goToDashboard,
+            icon: Icons.home_rounded,
+            label: 'Go to Dashboard',
           ),
         ],
       );
     } else if (!_isProcessing && !_hasError) {
       return Column(
         children: [
+          // Success indicator
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF00D4AA).withOpacity(0.1),
+                  const Color(0xFF4ECDC4).withOpacity(0.05),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.green.withOpacity(0.2),
+                color: const Color(0xFF00D4AA).withOpacity(0.2),
                 width: 1,
               ),
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.green[700],
-                  size: 20,
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF00D4AA),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check_rounded,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Expanded(
-                  child: Text(
-                    'Your Snapchat account is now connected!',
-                    style: TextStyle(
-                      color: Colors.green[700],
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Account Connected!',
+                        style: TextStyle(
+                          color: Color(0xFF00D4AA),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        'Your Snapchat account is ready to use',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: _isLoadingToken ? null : _handleTokenGeneration,
-              icon: _isLoadingToken
-                  ? const SizedBox(
+          const SizedBox(height: 24),
+          _buildGradientButton(
+            onPressed: _isLoadingToken ? null : _handleTokenGeneration,
+            icon: _isLoadingToken ? null : Icons.token_rounded,
+            label: _isLoadingToken ? 'Processing...' : 'Generate Access Token',
+            gradient: const LinearGradient(
+              colors: [Color(0xFF4ECDC4), Color(0xFF6C5CE7)],
+            ),
+            textColor: Colors.white,
+            isLoading: _isLoadingToken,
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildGradientButton({
+    required VoidCallback? onPressed,
+    IconData? icon,
+    required String label,
+    required Gradient gradient,
+    required Color textColor,
+    bool isLoading = false,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: onPressed != null
+              ? gradient
+              : LinearGradient(
+                  colors: [Colors.grey[300]!, Colors.grey[400]!],
+                ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: onPressed != null
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(16),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isLoading)
+                    const SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
@@ -383,25 +546,69 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                  : const Icon(Icons.send),
-              label: Text(
-                  _isLoadingToken ? 'Processing...' : 'Generate Access Token'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFFC00),
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
+                  else if (icon != null)
+                    Icon(icon, color: textColor, size: 20),
+                  if (!isLoading && icon != null) const SizedBox(width: 8),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGlassButton({
+    required VoidCallback onPressed,
+    required IconData icon,
+    required String label,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Colors.grey[300]!,
+            width: 1,
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(16),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: Colors.grey[700], size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _handleTokenGeneration() async {
