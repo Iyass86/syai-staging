@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/login_controller.dart';
 import '../../controllers/auth_controller.dart';
 import '../../routes/app_routes.dart';
+import '../widgets/message_display_container.dart';
 
 class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
@@ -13,95 +14,98 @@ class LoginPage extends GetView<LoginController> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    colorScheme.surface.withOpacity(0.95),
-                    colorScheme.background.withOpacity(0.9),
-                  ]
-                : [
-                    colorScheme.primary.withOpacity(0.08),
-                    colorScheme.secondary.withOpacity(0.05),
-                  ],
+      body: MessageDisplayContainer(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? [
+                      colorScheme.surface.withOpacity(0.95),
+                      colorScheme.background.withOpacity(0.9),
+                    ]
+                  : [
+                      colorScheme.primary.withOpacity(0.08),
+                      colorScheme.secondary.withOpacity(0.05),
+                    ],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal:
-                    MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
-                vertical: 32.0,
-              ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: Card(
-                  elevation: isDark ? 8 : 16,
-                  shadowColor: colorScheme.shadow.withOpacity(0.15),
-                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal:
+                      MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
+                  vertical: 32.0,
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: Card(
+                    elevation: isDark ? 8 : 16,
+                    shadowColor: colorScheme.shadow.withOpacity(0.15),
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          colorScheme.surface,
-                          colorScheme.surface.withOpacity(0.95),
-                        ],
-                      ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(48.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Logo and branding
-                          Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: colorScheme.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            colorScheme.surface,
+                            colorScheme.surface.withOpacity(0.95),
+                          ],
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(48.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Logo and branding
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Icon(
+                                Icons.chat_bubble_outline,
+                                size: 64,
+                                color: colorScheme.primary,
+                              ),
                             ),
-                            child: Icon(
-                              Icons.chat_bubble_outline,
-                              size: 64,
-                              color: colorScheme.primary,
+                            const SizedBox(height: 32),
+                            Text(
+                              'welcome_to_oauth_chat'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.onSurface,
+                                  ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          const SizedBox(height: 32),
-                          Text(
-                            'welcome_to_oauth_chat'.tr,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: colorScheme.onSurface,
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Sign in to continue your conversation',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  color: colorScheme.onSurface.withOpacity(0.7),
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 48),
-                          _buildLoginForm(context),
-                        ],
+                            const SizedBox(height: 8),
+                            Text(
+                              'sign_in_subtitle'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color:
+                                        colorScheme.onSurface.withOpacity(0.7),
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 48),
+                            _buildLoginForm(context),
+                          ],
+                        ),
                       ),
                     ),
                   ),

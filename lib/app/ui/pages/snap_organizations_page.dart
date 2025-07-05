@@ -5,6 +5,7 @@ import 'package:flutter_oauth_chat/app/controllers/snap_controllers/snap_organiz
 import 'package:flutter_oauth_chat/app/data/models/organization.dart';
 import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
 import 'package:get/get.dart';
+import '../widgets/message_display_container.dart';
 
 class SnapOrganizationsPage extends StatefulWidget {
   const SnapOrganizationsPage({super.key});
@@ -50,17 +51,19 @@ class _SnapOrganizationsPageState extends State<SnapOrganizationsPage>
         builder: (controller) => Scaffold(
               backgroundColor: colorScheme.surface,
               appBar: _buildAppBar(context, controller, colorScheme),
-              body: Container(
-                color: colorScheme.surface,
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        _buildErrorDisplay(controller, colorScheme),
-                        _buildMainContent(controller, colorScheme),
-                      ],
+              body: MessageDisplayContainer(
+                child: Container(
+                  color: colorScheme.surface,
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          _buildErrorDisplay(controller, colorScheme),
+                          _buildMainContent(controller, colorScheme),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -534,7 +537,7 @@ class _SnapOrganizationsPageState extends State<SnapOrganizationsPage>
 
   /// Disconnect Snap authentication
   void _disconnectSnapAuth() {
-     final snapAuthController = Get.find<SnapAuthController>();
+    final snapAuthController = Get.find<SnapAuthController>();
     snapAuthController.disconnectSnapAuth();
   }
 }

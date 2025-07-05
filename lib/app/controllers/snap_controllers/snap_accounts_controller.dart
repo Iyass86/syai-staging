@@ -10,6 +10,7 @@ import 'package:flutter_oauth_chat/app/core/exceptions/snap_api_exception.dart';
 import 'package:flutter_oauth_chat/app/data/models/ad_accounts_response.dart';
 import 'package:flutter_oauth_chat/app/data/models/ads_manager.dart';
 import 'package:flutter_oauth_chat/app/utils/constants.dart';
+import '../message_display_controller.dart';
 
 /// Controller responsible for managing ad accounts data and operations
 /// Handles fetching, filtering, and displaying ad accounts from Snapchat Ads API
@@ -35,6 +36,8 @@ class SnapAccountsController extends GetxController {
       Get.find<SnapValidTokenController>();
 
   StorageService get _storageService => Get.find<StorageService>();
+  MessageDisplayController get _messageController =>
+      Get.find<MessageDisplayController>();
   // ===============================
   // LIFECYCLE METHODS
   // ===============================
@@ -213,56 +216,23 @@ class SnapAccountsController extends GetxController {
   }
 
   void _showSuccessMessage(String message, {Duration? duration}) {
-    Get.snackbar(
-      'Success',
+    _messageController.displaySuccess(
       message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.green.withOpacity(0.9),
-      colorText: Colors.white,
       duration: duration ?? _successSnackbarDuration,
-      margin: const EdgeInsets.all(8),
     );
   }
 
   void _showErrorMessage(String message, {Duration? duration}) {
-    Get.snackbar(
-      'Error',
+    _messageController.displayError(
       message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.red.withOpacity(0.9),
-      colorText: Colors.white,
       duration: duration ?? _snackbarDuration,
-      margin: const EdgeInsets.all(8),
     );
   }
 
   void _showNetworkErrorMessage() {
-    Get.snackbar(
-      'Network Error',
-      'Connection failed. Please check:\n• Internet connection\n• Firewall settings\n• VPN configuration\n• Try refreshing the page',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.orange.withOpacity(0.1),
-      colorText: Colors.orange,
+    _messageController.displayNetworkError(
+      'فشل الاتصال. يرجى التحقق من الإنترنت وإعدادات الشبكة ثم إعادة المحاولة.',
       duration: const Duration(seconds: 6),
-      messageText: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Connection failed. Please check:',
-            style: TextStyle(
-                color: Colors.orange[700], fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text('• Internet connection',
-              style: TextStyle(color: Colors.orange[700])),
-          Text('• Firewall settings',
-              style: TextStyle(color: Colors.orange[700])),
-          Text('• VPN configuration',
-              style: TextStyle(color: Colors.orange[700])),
-          Text('• Try refreshing the page',
-              style: TextStyle(color: Colors.orange[700])),
-        ],
-      ),
     );
   }
 

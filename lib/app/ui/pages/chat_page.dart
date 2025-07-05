@@ -1,52 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/chat_controller.dart';
+import '../../controllers/message_display_controller.dart';
 import '../widgets/chat_message_list.dart';
 import '../widgets/theme_toggle_button.dart';
+import '../widgets/message_display_container.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);
+
+  MessageDisplayController get _messageController =>
+      Get.find<MessageDisplayController>();
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
-      appBar: _buildAppBar(colorScheme),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isDesktop = constraints.maxWidth > 1200;
-          final isTablet =
-              constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
-          final isMobile = constraints.maxWidth <= 768;
+        backgroundColor: colorScheme.surface,
+        appBar: _buildAppBar(colorScheme),
+        body: MessageDisplayContainer(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isDesktop = constraints.maxWidth > 1200;
+              final isTablet =
+                  constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
+              final isMobile = constraints.maxWidth <= 768;
 
-          return Obx(() {
-            // ChatGPT-like layout: centered input when empty, normal layout when messages exist
-            if (controller.messages.isEmpty) {
-              return _buildEmptyStateLayout(
-                  colorScheme, isDesktop, isTablet, isMobile);
-            } else {
-              return Stack(
-                children: [
-                  Column(
+              return Obx(() {
+                // ChatGPT-like layout: centered input when empty, normal layout when messages exist
+                if (controller.messages.isEmpty) {
+                  return _buildEmptyStateLayout(
+                      colorScheme, isDesktop, isTablet, isMobile);
+                } else {
+                  return Stack(
                     children: [
-                      _buildLoadingStatus(colorScheme),
-                      Expanded(child: _buildMessagesList(colorScheme)),
-                      _buildMessageInputCard(
+                      Column(
+                        children: [
+                          _buildLoadingStatus(colorScheme),
+                          Expanded(child: _buildMessagesList(colorScheme)),
+                          _buildMessageInputCard(
+                              colorScheme, isDesktop, isTablet, isMobile),
+                        ],
+                      ),
+                      // Floating suggestions button
+                      _buildFloatingSuggestions(
                           colorScheme, isDesktop, isTablet, isMobile),
                     ],
-                  ),
-                  // Floating suggestions button
-                  _buildFloatingSuggestions(
-                      colorScheme, isDesktop, isTablet, isMobile),
-                ],
-              );
-            }
-          });
-        },
-      ),
-    );
+                  );
+                }
+              });
+            },
+          ),
+        ));
   }
 
   PreferredSizeWidget _buildAppBar(ColorScheme colorScheme) {
@@ -1386,13 +1392,8 @@ class ChatPage extends GetView<ChatController> {
                                 : 20,
                       ),
                       onPressed: () {
-                        Get.snackbar(
-                          'coming_soon'.tr,
-                          'Emoji picker will be available soon!',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: colorScheme.primaryContainer,
-                          colorText: colorScheme.onPrimaryContainer,
-                        );
+                        _messageController.displayInfo(
+                            'قريباً، سيتم إضافة أداة اختيار الرموز التعبيرية!');
                       },
                       style: IconButton.styleFrom(
                         backgroundColor: colorScheme.surfaceContainerHighest

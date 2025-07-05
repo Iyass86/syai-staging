@@ -10,9 +10,12 @@ import 'package:flutter_oauth_chat/app/services/supabase_service.dart';
 
 import '../routes/app_routes.dart';
 import '../services/storage_service.dart';
+import 'message_display_controller.dart';
 
 class AuthController extends GetxController {
   final StorageService storageService = Get.find<StorageService>();
+  MessageDisplayController get _messageController =>
+      Get.find<MessageDisplayController>();
 
   final isAuthenticated = false.obs;
   final currentUser = Rxn<User>();
@@ -66,8 +69,8 @@ class AuthController extends GetxController {
     }).catchError((error) {
       // Handle login error
       if (error is SupabaseException) {
-        Get.snackbar('Error', error.message,
-            snackPosition: SnackPosition.BOTTOM);
+        _messageController
+            .displayError('خطأ في تسجيل الدخول: ${error.message}');
       }
       isLoading.value = false;
       debugPrint('Error during registration: ${error.toString()}');
@@ -106,8 +109,7 @@ class AuthController extends GetxController {
       Get.toNamed(AppRoutes.dashboard);
     }).catchError((error) {
       if (error is SupabaseException) {
-        Get.snackbar('Error', error.message,
-            snackPosition: SnackPosition.BOTTOM);
+        _messageController.displayError('خطأ في التسجيل: ${error.message}');
       }
       isLoading.value = false;
       debugPrint('Error during registration: ${error.toString()}');
@@ -158,27 +160,16 @@ class AuthController extends GetxController {
       debugPrint('Guest login successful');
 
       // Show guest mode notification
-      Get.snackbar(
-        'Guest Mode',
-        'You are logged in as a guest. Some features may be limited.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange.shade100,
-        colorText: Colors.orange.shade800,
-        duration: const Duration(seconds: 4),
-        icon: const Icon(Icons.person_outline, color: Colors.orange),
-      );
+      _messageController.displayWarning(
+          'أنت مسجل دخول كضيف. بعض الميزات قد تكون محدودة.',
+          duration: const Duration(seconds: 4));
 
       // Navigate to dashboard
       Get.offNamed(AppRoutes.dashboard);
     } catch (error) {
       debugPrint('Error during guest login: ${error.toString()}');
-      Get.snackbar(
-        'Guest Login Failed',
-        'Unable to create guest session. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.shade100,
-        colorText: Colors.red.shade800,
-      );
+      _messageController
+          .displayError('فشل تسجيل دخول الضيف، يرجى المحاولة مرة أخرى.');
     } finally {
       isLoading.value = false;
     }
@@ -233,23 +224,11 @@ class AuthController extends GetxController {
       // Clear guest status
       isGuestUser.value = false;
 
-      Get.snackbar(
-        'Account Created',
-        'Your guest account has been upgraded successfully!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green.shade100,
-        colorText: Colors.green.shade800,
-        icon: const Icon(Icons.check_circle_outline, color: Colors.green),
-      );
+      _messageController.displaySuccess('تم ترقية حساب الضيف بنجاح!');
     } catch (error) {
       debugPrint('Error upgrading guest account: ${error.toString()}');
-      Get.snackbar(
-        'Upgrade Failed',
-        'Unable to upgrade guest account. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.shade100,
-        colorText: Colors.red.shade800,
-      );
+      _messageController
+          .displayError('فشل ترقية حساب الضيف، يرجى المحاولة مرة أخرى.');
     } finally {
       isLoading.value = false;
     }

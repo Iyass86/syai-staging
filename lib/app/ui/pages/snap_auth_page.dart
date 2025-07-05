@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_oauth_chat/app/controllers/snap_controllers/snap_auth_controller.dart';
-import 'package:flutter_oauth_chat/app/controllers/register_controller.dart';
+import 'package:flutter_oauth_chat/app/controllers/message_display_controller.dart';
+import 'package:flutter_oauth_chat/app/ui/widgets/message_display_container.dart';
+import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 import '../../routes/app_routes.dart';
 
@@ -13,33 +16,40 @@ class SnapAuthPage extends GetView<SnapAuthController> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    colorScheme.surface.withOpacity(0.95),
-                    colorScheme.background.withOpacity(0.9),
-                  ]
-                : [
-                    colorScheme.primary.withOpacity(0.08),
-                    colorScheme.secondary.withOpacity(0.05),
-                  ],
+      body: MessageDisplayContainer(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? [
+                      colorScheme.surface.withOpacity(0.95),
+                      colorScheme.background.withOpacity(0.9),
+                    ]
+                  : [
+                      colorScheme.primary.withOpacity(0.08),
+                      colorScheme.secondary.withOpacity(0.05),
+                    ],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal:
-                    MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
-                vertical: 32.0,
-              ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: _buildCard(context),
+          child: SafeArea(
+            child: Center(
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  scrollbars: false,
+                ),
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal:
+                        MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
+                    vertical: 32.0,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 440),
+                    child: _buildCard(context),
+                  ),
+                ),
               ),
             ),
           ),
@@ -199,36 +209,79 @@ class SnapAuthPage extends GetView<SnapAuthController> {
     String? Function(String?)? onChanged,
     required ColorScheme colorScheme,
   }) {
-    return TextFormField(
-      controller: controller,
-      onChanged: onChanged,
-      textInputAction: TextInputAction.next,
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        prefixIcon: Icon(prefixIcon, color: colorScheme.primary),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: colorScheme.outline),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                labelText,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.info_outline,
+                  size: 16,
+                  color: colorScheme.primary,
+                ),
+              ),
+            ),
+          ],
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.5)),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          onChanged: onChanged,
+          textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            hintText: hintText,
+            prefixIcon: Icon(prefixIcon, color: colorScheme.primary),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: colorScheme.outline),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide:
+                  BorderSide(color: colorScheme.outline.withOpacity(0.5)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: colorScheme.primary, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: colorScheme.error),
+            ),
+            filled: true,
+            fillColor: colorScheme.surface,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          ),
+          validator: validator,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: colorScheme.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: colorScheme.error),
-        ),
-        filled: true,
-        fillColor: colorScheme.surface,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      ),
-      validator: validator,
+      ],
+    );
+  }
+
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    Get.find<MessageDisplayController>().displaySuccess(
+      'redirect_uri_copied'.tr,
+      duration: const Duration(seconds: 2),
     );
   }
 
