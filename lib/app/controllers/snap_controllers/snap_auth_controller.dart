@@ -107,7 +107,7 @@ class SnapAuthController extends GetxController {
   }
 
   Future<void> generateAccessToken() async {
-    Map<String, String?> snapAuth = await getSnapAuth();
+    Map<String, dynamic> snapAuth = await getSnapAuth();
     if (snapAuth.isEmpty) {
       _showErrorMessage('Please fill in all required fields');
       return;
@@ -151,7 +151,7 @@ class SnapAuthController extends GetxController {
   }
 
   Future<SnapTokenResponse> _requestAccessToken(
-      Map<String, String?> snapAuth) async {
+      Map<String, dynamic> snapAuth) async {
     return await _snapRepository.generateAccessToken(
       clientId: snapAuth['clientId'] ?? '',
       clientSecret: snapAuth['clientSecret'] ?? '',
@@ -170,7 +170,7 @@ class SnapAuthController extends GetxController {
     await _storageService.saveSnapAuth(mapData);
   }
 
-  getSnapAuth() async {
+  Future<Map<String, dynamic>> getSnapAuth() async {
     return _storageService.getSnapAuth();
   }
 
