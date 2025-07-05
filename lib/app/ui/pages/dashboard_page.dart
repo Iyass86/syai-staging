@@ -66,7 +66,7 @@ class DashboardPage extends GetView<DashboardController> {
               const SizedBox(height: 32),
 
               // Marketing Trends Chart
-              _buildMarketingChart(),
+              //  _buildMarketingChart(),
             ],
           ),
         );
