@@ -282,7 +282,8 @@ class SnapAuthController extends GetxController {
 
       await _storageService.saveSnapToken(tokenResponse.toJson());
       update();
-
+      print(
+          'Access token generated successfully: ${tokenResponse.accessToken}');
       // Build and save AdsManager to storage service before database operations
       final adsManager = _buildAdsManagerModel(tokenResponse);
       await _storageService.saveAdsManager(adsManager.toJson());
@@ -422,7 +423,7 @@ class SnapAuthController extends GetxController {
       debugPrint('Authorization code extracted from callback: $code');
       update();
       // Automatically generate access token
-      await generateAccessToken();
+      //await generateAccessToken();
     } catch (e) {
       _showErrorMessage('Failed to process OAuth callback: $e');
       debugPrint('OAuth callback processing error: $e');
