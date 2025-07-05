@@ -266,8 +266,7 @@ class SnapAuthController extends GetxController {
         return;
       }
       saveSnapAuth();
-      Get.toNamed(AppRoutes.snapOauthCallback);
-      return;
+
       final state = AppConstants.generateState();
       await _storageService.saveCsrfState(state);
 
