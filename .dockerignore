@@ -49,8 +49,8 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
-# Environment files
-.env
+# Environment files (نسخ .env الرئيسي فقط)
+# .env - سيتم نسخه في Dockerfile
 .env.local
 .env.development.local
 .env.test.local

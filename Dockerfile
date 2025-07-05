@@ -14,7 +14,10 @@ COPY pubspec.yaml pubspec.lock ./
 # تحميل التبعيات في طبقة منفصلة للاستفادة من cache
 RUN flutter pub get
 
-# إنشاء .dockerignore لتجنب نسخ ملفات غير ضرورية
+# نسخ ملف البيئة المطلوب (مع التحقق من وجوده)
+COPY .env* ./
+RUN test -f .env || echo "SUPABASE_URL=\nSUPABASE_ANON_KEY=\nWEBHOOK_URL=\nOAUTH_CLIENT_ID=\nOAUTH_REDIRECT_URI=\nAPI_BASE_URL=" > .env
+
 # نسخ الكود المصدري بعد تحميل التبعيات
 COPY lib/ ./lib/
 COPY web/ ./web/

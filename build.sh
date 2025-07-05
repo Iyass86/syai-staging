@@ -4,6 +4,21 @@
 
 echo "🚀 بدء بناء تطبيق Flutter Web..."
 
+# التحقق من وجود ملف .env
+if [ ! -f ".env" ]; then
+    echo "⚠️ ملف .env غير موجود، سيتم إنشاء ملف افتراضي..."
+    if [ -f ".env.example" ]; then
+        cp .env.example .env
+        echo "✅ تم نسخ ملف .env.example إلى .env"
+    else
+        echo "❌ ملف .env.example غير موجود، يرجى إنشاء ملف .env يدوياً"
+        echo "يمكنك استخدام المثال التالي:"
+        echo "SUPABASE_URL=https://your-project.supabase.co"
+        echo "SUPABASE_ANON_KEY=your-anon-key"
+        exit 1
+    fi
+fi
+
 # تنظيف البناء السابق
 echo "🧹 تنظيف البناء السابق..."
 flutter clean

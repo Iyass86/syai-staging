@@ -2,6 +2,21 @@
 
 Write-Host "🚀 بدء بناء تطبيق Flutter Web..." -ForegroundColor Green
 
+# التحقق من وجود ملف .env
+if (-not (Test-Path ".env")) {
+    Write-Host "⚠️ ملف .env غير موجود، سيتم إنشاء ملف افتراضي..." -ForegroundColor Yellow
+    if (Test-Path ".env.example") {
+        Copy-Item ".env.example" ".env"
+        Write-Host "✅ تم نسخ ملف .env.example إلى .env" -ForegroundColor Green
+    } else {
+        Write-Host "❌ ملف .env.example غير موجود، يرجى إنشاء ملف .env يدوياً" -ForegroundColor Red
+        Write-Host "يمكنك استخدام المثال التالي:" -ForegroundColor Yellow
+        Write-Host "SUPABASE_URL=https://your-project.supabase.co" -ForegroundColor Gray
+        Write-Host "SUPABASE_ANON_KEY=your-anon-key" -ForegroundColor Gray
+        exit 1
+    }
+}
+
 # تنظيف البناء السابق
 Write-Host "🧹 تنظيف البناء السابق..." -ForegroundColor Yellow
 flutter clean
