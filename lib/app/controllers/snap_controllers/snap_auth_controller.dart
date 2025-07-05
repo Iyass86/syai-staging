@@ -19,9 +19,9 @@ class SnapAuthController extends GetxController {
   // CONSTANTS & DEFAULT VALUES
   // ===============================
   static const String _defaultRedirectUri =
-      'https://syai-staging.onrender.com/snap_callback.html';
-  static const String _defaultClientId = 'ba9686e8-3235-43e4-b597-47e8480055b8';
-  static const String _defaultClientSecret = '8847389e2bb2c5d4db43';
+      'https://fce3-213-6-133-123.ngrok-free.app/snap_callback.html';
+  static const String _defaultClientId = '03124e03-2fe7-4a74-a5d2-476d94fe1c8f';
+  static const String _defaultClientSecret = '7b3364d56eceb31ed325';
 
   static const String _defaultGrantType = 'authorization_code';
 
@@ -420,12 +420,9 @@ class SnapAuthController extends GetxController {
       // Fill the authorization code in the form
       urlCodeController.text = code;
       debugPrint('Authorization code extracted from callback: $code');
-
+      update();
       // Automatically generate access token
       await generateAccessToken();
-
-      // Navigation will be handled by generateAccessToken method
-      _showSuccessMessage('OAuth callback processed successfully');
     } catch (e) {
       _showErrorMessage('Failed to process OAuth callback: $e');
       debugPrint('OAuth callback processing error: $e');

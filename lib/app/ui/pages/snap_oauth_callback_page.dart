@@ -22,7 +22,7 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
   void initState() {
     super.initState();
     _snapAuthController = Get.find<SnapAuthController>();
-    _handleSnapCallback();
+    //_handleSnapCallback();
   }
 
   Future<void> _handleSnapCallback() async {
@@ -67,6 +67,23 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
 
   void _goToDashboard() {
     Get.offAllNamed(AppRoutes.dashboard);
+  }
+
+  void _passCodeToLocalhost() async {
+    try {
+      // Get the current URL to extract the code parameter
+      final currentUrl = html.window.location.href;
+      final uri = Uri.parse(currentUrl);
+      final code = uri.queryParameters['code'] ?? '';
+
+      // Construct the localhost URL with the code
+      final localhostUrl = 'http://localhost:8080?code=$code';
+
+      // Open the localhost URL in a new tab/window
+      html.window.open(localhostUrl, '_blank');
+    } catch (e) {
+      debugPrint('Error passing code to localhost: $e');
+    }
   }
 
   @override
@@ -164,6 +181,22 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage> {
                           label: const Text('Go to Dashboard'),
                         ),
                       ],
+                    ),
+                  ],
+
+                  // Pass Code Button (show when authentication is successful)
+                  if (!_isProcessing && !_hasError) ...[
+                    const SizedBox(height: 32),
+                    ElevatedButton.icon(
+                      onPressed: _passCodeToLocalhost,
+                      icon: const Icon(Icons.send),
+                      label: const Text('Pass Code to Localhost'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onSecondary,
+                      ),
                     ),
                   ],
                 ],
