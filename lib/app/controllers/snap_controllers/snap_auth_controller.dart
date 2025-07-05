@@ -108,6 +108,7 @@ class SnapAuthController extends GetxController {
 
   Future<void> generateAccessToken() async {
     Map<String, dynamic> snapAuth = await getSnapAuth();
+    String authCode = await _storageService.getAuthCode();
     if (snapAuth.isEmpty) {
       _showErrorMessage('Please fill in all required fields');
       return;
@@ -115,7 +116,7 @@ class SnapAuthController extends GetxController {
     _setLoadingState(true);
 
     try {
-      final tokenResponse = await _requestAccessToken(snapAuth);
+      final tokenResponse = await _requestAccessToken(snapAuth, authCode);
 
       await _storageService.saveSnapToken(tokenResponse.toJson());
       update();
@@ -151,11 +152,11 @@ class SnapAuthController extends GetxController {
   }
 
   Future<SnapTokenResponse> _requestAccessToken(
-      Map<String, dynamic> snapAuth) async {
+      Map<String, dynamic> snapAuth, String code) async {
     return await _snapRepository.generateAccessToken(
       clientId: snapAuth['clientId'] ?? '',
       clientSecret: snapAuth['clientSecret'] ?? '',
-      authorizationCode: snapAuth['code'] ?? '',
+      authorizationCode: code,
       redirectUri: snapAuth['redirectUri'] ?? '',
     );
   }
@@ -164,7 +165,6 @@ class SnapAuthController extends GetxController {
     final mapData = {
       'clientId': clientIdController.text.trim(),
       'clientSecret': clientSecretController.text.trim(),
-      'code': urlCodeController.text.trim(),
       'redirectUri': redirectUriController.text.trim(),
     };
     await _storageService.saveSnapAuth(mapData);
@@ -251,7 +251,10 @@ class SnapAuthController extends GetxController {
         }
       }
 
-      urlCodeController.text = code;
+      saveSnapAuth();
+      saveAuthCode(code);
+      debugPrint('GetSnapAuth ${getSnapAuth()}');
+
       debugPrint('Authorization code extracted from callback: $code');
       update();
     } catch (e) {
@@ -267,16 +270,7 @@ class SnapAuthController extends GetxController {
       await _storageService.saveCsrfState(state);
 
       final authUrl = _buildAuthorizationUrl(state);
-      final result = await _authenticateWithWebAuth(authUrl);
-      final code = _extractAuthorizationCode(result);
-
-      if (code != null) {
-        urlCodeController.text = code;
-        debugPrint('Authorization code received: $code');
-        _showSuccessMessage('Authorization code received successfully');
-      } else {
-        _showErrorMessage('Failed to extract authorization code');
-      }
+      await _authenticateWithWebAuth(authUrl);
     } catch (e) {
       String errorMessage = 'Failed to initiate OAuth flow';
 
@@ -411,5 +405,9 @@ class SnapAuthController extends GetxController {
 
   void _navigateToAdAccounts() {
     Get.offAllNamed(AppRoutes.snapOrganizations);
+  }
+
+  void saveAuthCode(String code) {
+    _storageService.saveAuthCode(code);
   }
 }
