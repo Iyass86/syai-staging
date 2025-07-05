@@ -22,7 +22,6 @@ class SnapAuthController extends GetxController {
   final TextEditingController clientIdController = TextEditingController();
   final TextEditingController clientSecretController = TextEditingController();
   final TextEditingController urlCodeController = TextEditingController();
-  final TextEditingController redirectUriController = TextEditingController();
 
   final RxString grantType = _defaultGrantType.obs;
   final RxBool isLoading = false.obs;
@@ -62,7 +61,6 @@ class SnapAuthController extends GetxController {
     if (storedAdsManager != null) {
       clientIdController.text = storedAdsManager.clientId;
       clientSecretController.text = storedAdsManager.clientSecret;
-      redirectUriController.text = storedAdsManager.redirectUri;
       urlCodeController.text = storedAdsManager.code;
       debugPrint('Loaded stored AdsManager data into form fields');
     }
@@ -72,7 +70,6 @@ class SnapAuthController extends GetxController {
     clientIdController.dispose();
     clientSecretController.dispose();
     urlCodeController.dispose();
-    redirectUriController.dispose();
   }
 
   String? extractQueryParameter(String? url, String paramName) {
@@ -141,7 +138,7 @@ class SnapAuthController extends GetxController {
       clientId: clientIdController.text.trim(),
       clientSecret: clientSecretController.text.trim(),
       code: urlCodeController.text.trim(),
-      redirectUri: redirectUriController.text.trim(),
+      redirectUri: defaultRedirectUri,
       createdAt: DateTime.now().toUtc(),
       grantType: _defaultGrantType,
       uid: _storageService.getUser()?.id ?? '',
@@ -165,7 +162,7 @@ class SnapAuthController extends GetxController {
     final mapData = {
       'clientId': clientIdController.text.trim(),
       'clientSecret': clientSecretController.text.trim(),
-      'redirectUri': redirectUriController.text.trim(),
+      'redirectUri': defaultRedirectUri,
     };
     await _storageService.saveSnapAuth(mapData);
   }
@@ -297,7 +294,7 @@ class SnapAuthController extends GetxController {
       queryParameters: {
         'response_type': 'code',
         'client_id': clientIdController.text.trim(),
-        'redirect_uri': redirectUriController.text.trim(),
+        'redirect_uri': defaultRedirectUri,
         'scope': AppConstants.oauthScopes.join(' '),
         'state': state,
       },
