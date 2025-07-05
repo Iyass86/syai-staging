@@ -114,11 +114,11 @@ class SnapAuthController extends GetxController {
       final tokenResponse = await _requestAccessToken(snapAuth, authCode);
 
       await _storageService.saveSnapToken(tokenResponse.toJson());
-      update();
       debugPrint(
           'Access token generated successfully: ${tokenResponse.accessToken}');
 
-      final adsManager = _buildAdsManagerModel(tokenResponse);
+      final adsManager =
+          _buildAdsManagerModel(tokenResponse, snapAuth, authCode);
       await _storageService.saveAdsManager(adsManager.toJson());
 
       _showSuccessMessage('Access token generated successfully');
@@ -130,12 +130,13 @@ class SnapAuthController extends GetxController {
     }
   }
 
-  AdsManagerModel _buildAdsManagerModel(SnapTokenResponse snapTokenResponse) {
+  AdsManagerModel _buildAdsManagerModel(SnapTokenResponse snapTokenResponse,
+      Map<String, dynamic> snapAuth, String authCode) {
     return AdsManagerModel(
       id: 0,
-      clientId: clientIdController.text.trim(),
-      clientSecret: clientSecretController.text.trim(),
-      code: urlCodeController.text.trim(),
+      clientId: snapAuth['clientId'] ?? '',
+      clientSecret: snapAuth['clientSecret'] ?? '',
+      code: authCode,
       redirectUri: defaultRedirectUri,
       createdAt: DateTime.now().toUtc(),
       grantType: _defaultGrantType,
@@ -265,6 +266,8 @@ class SnapAuthController extends GetxController {
         return;
       }
       saveSnapAuth();
+      Get.toNamed(AppRoutes.snapOauthCallback);
+      return;
       final state = AppConstants.generateState();
       await _storageService.saveCsrfState(state);
 
@@ -309,7 +312,6 @@ class SnapAuthController extends GetxController {
       callbackUrlScheme: "https",
       options: const FlutterWebAuth2Options(
         useWebview: true,
-        timeout: 300000, // 5 minutes
       ),
     );
   }

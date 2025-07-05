@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_oauth_chat/app/controllers/snap_controllers/snap_auth_controller.dart';
+import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class SnapAuthPage extends GetView<SnapAuthController> {
