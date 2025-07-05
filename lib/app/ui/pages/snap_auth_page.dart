@@ -31,15 +31,20 @@ class SnapAuthPage extends GetView<SnapAuthController> {
         ),
         child: SafeArea(
           child: Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal:
-                    MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
-                vertical: 32.0,
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                scrollbars: false,
               ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: _buildCard(context),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal:
+                      MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
+                  vertical: 32.0,
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: _buildCard(context),
+                ),
               ),
             ),
           ),
