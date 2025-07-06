@@ -4,8 +4,8 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:flutter_oauth_chat/app/bindings/initial_binding.dart';
-import 'package:flutter_oauth_chat/app/core/app.dart';
+import 'package:flutter_oauth_chat/core/bindings/initial_binding.dart';
+import 'package:flutter_oauth_chat/presentation/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

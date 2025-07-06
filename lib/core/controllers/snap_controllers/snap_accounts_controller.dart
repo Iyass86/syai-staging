@@ -1,0 +1,251 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_oauth_chat/core/models/ad_account.dart';
+import 'package:flutter_oauth_chat/core/repositories/snap_repository.dart';
+import 'package:flutter_oauth_chat/core/routes/app_routes.dart';
+import 'package:flutter_oauth_chat/core/services/storage_service.dart';
+import 'package:get/get.dart';
+
+import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_valid_token_controller.dart';
+import 'package:flutter_oauth_chat/core/exceptions/snap_api_exception.dart';
+import 'package:flutter_oauth_chat/core/models/ad_accounts_response.dart';
+import 'package:flutter_oauth_chat/core/models/ads_manager.dart';
+import 'package:flutter_oauth_chat/core/utils/constants.dart';
+import '../message_display_controller.dart';
+
+/// Controller responsible for managing ad accounts data and operations
+/// Handles fetching, filtering, and displaying ad accounts from Snapchat Ads API
+class SnapAccountsController extends GetxController {
+  // ===============================
+  // CONSTANTS
+  // ===============================
+  static const Duration _snackbarDuration = Duration(seconds: 3);
+  static const Duration _successSnackbarDuration = Duration(seconds: 2);
+
+  // ===============================
+  // OBSERVABLES & STATE
+  // ===============================
+  final RxBool isLoading = false.obs;
+  final Rx<AdAccountsResponse?> adAccountsResponse =
+      Rx<AdAccountsResponse?>(null);
+  final RxString errorMessage = ''.obs;
+  late String organizationId;
+  // ===============================
+  // DEPENDENCY INJECTION
+  // ===============================
+  SnapValidTokenController get _snapController =>
+      Get.find<SnapValidTokenController>();
+
+  StorageService get _storageService => Get.find<StorageService>();
+  MessageDisplayController get _messageController =>
+      Get.find<MessageDisplayController>();
+  // ===============================
+  // LIFECYCLE METHODS
+  // ===============================
+
+  @override
+  void onInit() {
+    super.onInit();
+    organizationId = _storageService.selectedOrganization?.id ??
+        _storageService.snapTokenResponse?.organizationId ??
+        '';
+    _initializeController();
+  }
+
+  void _initializeController() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchAdAccounts();
+    });
+  }
+
+  // ===============================
+  // DATA FETCHING METHODS
+  // ===============================
+  /// Fetch all ad accounts for the organization
+  Future<void> fetchAdAccounts() async {
+    try {
+      _setLoadingState(true);
+      _clearErrorMessage();
+
+      final response = await _requestAdAccounts();
+
+      _handleSuccessfulResponse(response);
+    } on SnapApiException catch (e) {
+      _handleSnapApiError(e);
+    } catch (e) {
+      _handleGenericError(e);
+    } finally {
+      _setLoadingState(false);
+    }
+  }
+
+  Future<AdAccountsResponse> _requestAdAccounts() async {
+    return getAllAdAccounts();
+  }
+
+  SnapRepository get _snapRepository => Get.find<SnapRepository>();
+  Future<AdAccountsResponse> getAllAdAccounts() async {
+    final response = await _snapRepository.getAllAdAccounts();
+
+    return response;
+  }
+
+  void _handleSuccessfulResponse(AdAccountsResponse response) {
+    adAccountsResponse.value = response;
+    final accountCount = response.adAccounts.length;
+
+    _showSuccessMessage(
+      'Found $accountCount ad account${accountCount == 1 ? '' : 's'}',
+      duration: _successSnackbarDuration,
+    );
+  }
+
+  void _handleSnapApiError(SnapApiException error) {
+    final message = error.message;
+    errorMessage.value = message;
+    _showErrorMessage(message, duration: _snackbarDuration);
+  }
+
+  void _handleGenericError(dynamic error) {
+    const message = 'An unexpected error occurred';
+    final fullMessage = '$message: ${error.toString()}';
+
+    // Handle network-specific errors
+    if (error.toString().contains('DioException') ||
+        error.toString().contains('connection error') ||
+        error.toString().contains('XMLHttpRequest onError')) {
+      _showNetworkErrorMessage();
+      errorMessage.value = 'Network connection failed';
+      debugPrint('Ad Accounts Network Error: $fullMessage');
+      return;
+    }
+
+    errorMessage.value = fullMessage;
+    _showErrorMessage(message, duration: _snackbarDuration);
+    debugPrint('Ad Accounts Error: $fullMessage');
+  }
+
+  // ===============================
+  // DATA ACCESS GETTERS
+  // ===============================
+  /// Get a list of active ad accounts
+  List<dynamic> get activeAdAccounts {
+    return _getFilteredAdAccounts(
+      statusFilter: 'ACTIVE',
+      requireSuccess: true,
+    );
+  }
+
+  /// Get a list of all ad account names
+  List<String> get adAccountNames {
+    if (!_hasAdAccountsData) return [];
+
+    return adAccountsResponse.value!.adAccounts
+        .map((item) => item.adAccount.name)
+        .toList();
+  }
+
+  /// Get total count of ad accounts
+  int get totalAdAccountsCount {
+    return adAccountsResponse.value?.adAccounts.length ?? 0;
+  }
+
+  /// Get count of active ad accounts
+  int get activeAdAccountsCount {
+    return activeAdAccounts.length;
+  }
+
+  /// Check if ad accounts data is available
+  bool get _hasAdAccountsData {
+    return adAccountsResponse.value != null;
+  }
+
+  /// Get filtered ad accounts based on criteria
+  List<dynamic> _getFilteredAdAccounts({
+    String? statusFilter,
+    bool requireSuccess = false,
+  }) {
+    if (!_hasAdAccountsData) return [];
+
+    return adAccountsResponse.value!.adAccounts
+        .where((item) {
+          bool passesStatusCheck = true;
+          bool passesSuccessCheck = true;
+
+          if (requireSuccess) {
+            passesSuccessCheck = item.subRequestStatus == 'success';
+          }
+
+          if (statusFilter != null) {
+            passesStatusCheck = item.adAccount.status == statusFilter;
+          }
+
+          return passesStatusCheck && passesSuccessCheck;
+        })
+        .map((item) => item.adAccount)
+        .toList();
+  }
+
+  // ===============================
+  // PUBLIC ACTION METHODS
+  // ===============================
+  /// Clear the current ad accounts data
+  void clearData() {
+    adAccountsResponse.value = null;
+    _clearErrorMessage();
+  }
+
+  /// Refresh ad accounts data
+  Future<void> refreshAdAccounts() async {
+    await fetchAdAccounts();
+  }
+
+  /// Retry fetching ad accounts (alias for refresh)
+  Future<void> retryFetch() async {
+    await refreshAdAccounts();
+  }
+
+  // ===============================
+  // PRIVATE HELPER METHODS
+  // ===============================
+  void _setLoadingState(bool loading) {
+    isLoading.value = loading;
+  }
+
+  void _clearErrorMessage() {
+    errorMessage.value = '';
+  }
+
+  void _showSuccessMessage(String message, {Duration? duration}) {
+    _messageController.displaySuccess(
+      message,
+      duration: duration ?? _successSnackbarDuration,
+    );
+  }
+
+  void _showErrorMessage(String message, {Duration? duration}) {
+    _messageController.displayError(
+      message,
+      duration: duration ?? _snackbarDuration,
+    );
+  }
+
+  void _showNetworkErrorMessage() {
+    _messageController.displayNetworkError(
+      'فشل الاتصال. يرجى التحقق من الإنترنت وإعدادات الشبكة ثم إعادة المحاولة.',
+      duration: const Duration(seconds: 6),
+    );
+  }
+
+  selectAdAccount(AdAccount account) {
+    _storageService.saveSelectedAdAccount(account);
+    Get.toNamed(AppRoutes.chat);
+  }
+
+  void viewPixels(AdAccount account) {
+    _storageService.saveSelectedAdAccount(account);
+    Get.toNamed(AppRoutes.snapPixels, arguments: {
+      'adAccountId': account.id,
+      'adAccountName': account.name,
+    });
+  }
+}

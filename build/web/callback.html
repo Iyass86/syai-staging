@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Complete</title>
+    <script type="text/javascript">
+        // This script's job is to take the current URL in this popup
+        // and send it to the window that opened it (your main Flutter app).
+
+        // The data is sent in a specific format that packages like
+        // flutter_web_auth_2 expect.
+        const message = {
+            'flutter-web-auth-2': window.location.href
+        };
+
+        // window.opener refers to the main app window.
+        // window.location.origin provides the target origin for security.
+        window.opener.postMessage(message, window.location.origin);
+
+        // Close this popup window now that its job is done.
+        window.close();
+    </script>
+</head>
+
+<body>
+    <p>Please wait, authenticating...</p>
+    <p>You can close this window if it does not close automatically.</p>
+</body>
+
+</html>
