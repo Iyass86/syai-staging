@@ -5,6 +5,7 @@ import 'package:flutter_oauth_chat/app/ui/pages/snap_organizations_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_oauth_callback_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/error_test_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_pixel_setup_page.dart';
+import 'package:flutter_oauth_chat/app/ui/pages/snap_pixels_page.dart';
 import 'package:get/get.dart';
 
 // Feature pages
@@ -18,6 +19,7 @@ import '../ui/pages/oauth_callback_page.dart';
 // Bindings
 import '../bindings/chat_binding.dart';
 import '../bindings/dashboard_binding.dart';
+import '../bindings/snap_pixels_binding.dart';
 
 // Middleware
 import '../middleware/middleware_manager.dart';
@@ -117,6 +119,14 @@ abstract class AppPages {
       },
       middlewares: [
         MiddlewareManager.registeredOnly(AppRoutes.snapPixelSetup),
+      ],
+    ),
+    GetPage(
+      name: AppRoutes.snapPixels,
+      page: () => const SnapPixelsPage(),
+      bindings: [SnapPixelsBinding()],
+      middlewares: [
+        MiddlewareManager.registeredOnly(AppRoutes.snapPixels),
       ],
     ),
   ];

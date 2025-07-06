@@ -16,6 +16,7 @@ abstract class AppRoutes {
   static const socialMediaPage = '/social_media_page';
   static const snapAccounts = '/snap-accounts';
   static const snapOrganizations = '/snap-organizations';
+  static const snapPixels = '/snap-pixels';
   static const errorTest = '/error-test';
   static const snapPixelSetup = '/snap-pixel-setup';
 }

@@ -326,6 +326,15 @@ class AppTranslations extends Translations {
         'This is the redirect URI you need to configure in your Snapchat app:\n1. Go to Snapchat Ads Manager\n2. Navigate to Business Settings\n3. Click on API/SDK\n4. Select your app\n5. Add this URI to the Redirect URIs list\n6. Save your changes',
     'copied': 'Copied',
     'redirect_uri_copied': 'Redirect URI copied to clipboard',
+    // Pixels
+    'pixels': 'Pixels',
+    'view_pixels': 'View Pixels',
+    'copy_pixel_code': 'Copy Pixel Code',
+    'pixel_setup': 'Pixel Setup',
+    'no_pixels_found': 'No pixels found',
+    'loading_pixels': 'Loading pixels...',
+    'tap_refresh_pixels': 'Tap refresh to load your pixels',
+    'pixel_copied_success': 'Pixel code copied successfully'
   };
 
   // Arabic translations
@@ -646,5 +655,14 @@ class AppTranslations extends Translations {
         'هذا هو رابط إعادة التوجيه الذي تحتاج لتكوينه في تطبيق سناب شات:\n1. انتقل إلى مدير إعلانات سناب شات\n2. اذهب إلى إعدادات الأعمال\n3. اضغط على API/SDK\n4. اختر تطبيقك\n5. أضف هذا الرابط إلى قائمة روابط إعادة التوجيه\n6. احفظ التغييرات',
     'copied': 'تم النسخ',
     'redirect_uri_copied': 'تم نسخ رابط إعادة التوجيه',
+    // Pixels
+    'pixels': 'البكسلات',
+    'view_pixels': 'عرض البكسلات',
+    'copy_pixel_code': 'نسخ كود البكسل',
+    'pixel_setup': 'إعداد البكسل',
+    'no_pixels_found': 'لا توجد بكسلات',
+    'loading_pixels': 'جارٍ تحميل البكسلات...',
+    'tap_refresh_pixels': 'اضغط على تحديث لتحميل البكسلات',
+    'pixel_copied_success': 'تم نسخ كود البكسل بنجاح'
   };
 }

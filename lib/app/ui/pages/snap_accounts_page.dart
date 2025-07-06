@@ -426,11 +426,39 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
                               ],
                             ),
                           ),
-                          // Arrow
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: colorScheme.onSurface.withOpacity(0.4),
-                            size: 16,
+                          // Arrow and Pixels Icon
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Get.toNamed(
+                                    AppRoutes.snapPixels,
+                                    arguments: {
+                                      'adAccountId': account.id,
+                                      'adAccountName': account.name,
+                                    },
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.analytics_outlined,
+                                  color: colorScheme.primary,
+                                  size: 20,
+                                ),
+                                tooltip: 'view_pixels'.tr,
+                                style: IconButton.styleFrom(
+                                  backgroundColor:
+                                      colorScheme.primary.withOpacity(0.1),
+                                  padding: const EdgeInsets.all(8),
+                                  minimumSize: const Size(36, 36),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: colorScheme.onSurface.withOpacity(0.4),
+                                size: 16,
+                              ),
+                            ],
                           ),
                         ],
                       ),
