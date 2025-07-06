@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_auth_controller.dart';
@@ -122,11 +123,12 @@ class SnapAuthPage extends GetView<SnapAuthController> {
               _buildDivider(),
               const SizedBox(height: 32),
               _buildOAuthSignUp(),
-              ElevatedButton.icon(
-                onPressed: controller.generateAccessToken,
-                icon: Icon(Icons.login),
-                label: Text('Test Login with Snap'),
-              ),
+              if (kDebugMode)
+                ElevatedButton.icon(
+                  onPressed: controller.generateAccessToken,
+                  icon: Icon(Icons.login),
+                  label: Text('Test Login with Snap'),
+                ),
               const SizedBox(height: 24),
               // Check pixel tracking setup
               QuickSnapPixelButton(
