@@ -433,6 +433,21 @@ class SnapAuthPage extends GetView<SnapAuthController> {
     );
   }
 
+  void _showInfoDialog(String title, String content) {
+    Get.dialog(
+      AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text('ok'.tr),
+          ),
+        ],
+      ),
+    );
+  }
+
   String? _requiredValidator(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName ${'is_required'.tr}';
