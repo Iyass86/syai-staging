@@ -78,18 +78,6 @@ class LoginPage extends GetView<LoginController> {
                               color: colorScheme.primary,
                             ),
                           ),
-                          const SizedBox(height: 32),
-                          Text(
-                            'welcome_to_oauth_chat'.tr,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: colorScheme.onSurface,
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
 
                           const SizedBox(height: 32),
                           Text(
