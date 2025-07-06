@@ -6,6 +6,7 @@ class SnapPixelsBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<SnapPixelsController>(
       () => SnapPixelsController(),
+      fenix: true
     );
   }
 }

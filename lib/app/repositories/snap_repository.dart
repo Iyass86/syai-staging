@@ -19,22 +19,22 @@ class SnapRepository {
 
   final StorageService _storageService = Get.find<StorageService>();
   Future<void> ensureValidToken() async {
-    if (_storageService.snapTokenResponse?.accessToken.isEmpty ?? true) {
-      throw SnapApiException('No token available. Please authenticate first.');
-    }
-    final clientId = _storageService.getAdsManager()?.clientId ?? '';
-    final clientSecret = _storageService.getAdsManager()?.clientSecret ?? '';
+    // if (_storageService.snapTokenResponse?.accessToken.isEmpty ?? true) {
+    //   throw SnapApiException('No token available. Please authenticate first.');
+    // }
+    // final clientId = _storageService.getAdsManager()?.clientId ?? '';
+    // final clientSecret = _storageService.getAdsManager()?.clientSecret ?? '';
+    // // Check if the token is expired
+    // if (isTokenExpired()) {
+    //   final refreshedToken = await refreshAccessToken(
+    //     clientId: clientId,
+    //     clientSecret: clientSecret,
+    //     refreshToken: _storageService.snapTokenResponse!.refreshToken,
+    //   );
 
-    if (isTokenExpired()) {
-      final refreshedToken = await refreshAccessToken(
-        clientId: clientId,
-        clientSecret: clientSecret,
-        refreshToken: _storageService.snapTokenResponse!.refreshToken,
-      );
-
-      // Update the storage service with the new token
-      await _saveTokenResponse(refreshedToken);
-    }
+    //   // Update the storage service with the new token
+    //   await _saveTokenResponse(refreshedToken);
+    // }
   }
 
   bool isTokenExpired() {
@@ -109,7 +109,6 @@ class SnapRepository {
         'refresh_token': refreshToken,
         'grant_type': 'refresh_token',
       };
-
       final response = await dio.post(
         SnapApiConfig.tokenEndpoint,
         data: data,
@@ -144,7 +143,6 @@ class SnapRepository {
     }
   }
 
-  
   /// Get all ad accounts for an organization
   Future<AdAccountsResponse> getAllAdAccounts() async {
     try {
@@ -185,6 +183,13 @@ class SnapRepository {
   Future<OrganizationsResponse> getOrganizations() async {
     try {
       await ensureValidToken();
+      var body = {
+        'client_id': _storageService.getAdsManager()?.clientId ?? '',
+        'client_secret': _storageService.getAdsManager()?.clientSecret ?? '',
+        'access_token': _storageService.snapTokenResponse?.accessToken ?? '',
+        'refresh_token': _storageService.snapTokenResponse?.refreshToken ?? '',
+      };
+      debugPrint("##### Requesting organizations with body: $body");
       final response = await dio.post(
         SnapApiConfig.organizationsEndpoint(),
         data: {
@@ -220,15 +225,45 @@ class SnapRepository {
     try {
       await ensureValidToken();
 
-      final response = await dio.get(
-        SnapApiConfig.pixelsEndpoint(adAccountId),
+      final response = await dio.post(
+        SnapApiConfig.pixelsEndpoint(),
+        data: {
+          'ad_account_id': _storageService.selectedAdAccount?.id,
+          'organization_id': _storageService.selectedOrganization?.id ??
+              _storageService.snapTokenResponse?.organizationId ??
+              '',
+          'client_id': _storageService.getAdsManager()?.clientId ?? '',
+          'client_secret': _storageService.getAdsManager()?.clientSecret ?? '',
+          'access_token': _storageService.snapTokenResponse?.accessToken ?? '',
+          'refresh_token':
+              _storageService.snapTokenResponse?.refreshToken ?? '',
+        },
         options: Options(
           headers: SnapApiConfig.snapHeader,
-          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
-      return PixelsResponse.fromJson(response.data);
+      // Handle the case where API returns array with single response object
+      final responseData = response.data;
+      Map<String, dynamic> formattedResponse;
+
+      if (responseData is List && responseData.isNotEmpty) {
+        // API returns array with single object: [{request_status: SUCCESS, request_id: ..., pixels: []}]
+        formattedResponse = responseData[0] as Map<String, dynamic>;
+      } else if (responseData is Map<String, dynamic>) {
+        // If API returns properly formatted object, use as-is
+        formattedResponse = responseData;
+      } else {
+        throw SnapApiException(
+          'Unexpected response format for pixels API',
+          statusCode: response.statusCode,
+          errorData: responseData,
+        );
+      }
+
+      debugPrint(
+          "### Pixels response: ${formattedResponse['pixels']?.length ?? 0} pixels found");
+      return PixelsResponse.fromJson(formattedResponse);
     } on DioException catch (e) {
       if (e.response?.data != null) {
         final errorData = e.response!.data;

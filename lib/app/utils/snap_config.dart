@@ -12,8 +12,8 @@ class SnapApiConfig {
       'https://iyass861.app.n8n.cloud/webhook/ad-accounts';
   static String organizationsEndpoint() =>
       'https://iyass861.app.n8n.cloud/webhook/me/organizations';
-  static String pixelsEndpoint(String adAccountId) =>
-      'hhttps://adsapi.snapchat.com/v1/adaccounts/$adAccountId/pixels';
+  static String pixelsEndpoint() =>
+      'https://iyass861.app.n8n.cloud/webhook/pixels';
   // OAuth scopes for Snap Marketing API
   static const List<String> defaultScopes = [
     'snapchat-marketing-api',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_oauth_chat/app/core/exceptions/snap_api_exception.dart';
 import 'package:flutter_oauth_chat/app/data/models/pixel.dart';
 import 'package:flutter_oauth_chat/app/repositories/snap_repository.dart';
+import 'package:flutter_oauth_chat/app/services/storage_service.dart';
 import 'package:get/get.dart';
 import '../message_display_controller.dart';
 
@@ -20,8 +21,6 @@ class SnapPixelsController extends GetxController {
   final RxBool isLoading = false.obs;
   final Rx<PixelsResponse?> pixelsResponse = Rx<PixelsResponse?>(null);
   final RxString errorMessage = ''.obs;
-  late String adAccountId;
-  late String adAccountName;
 
   // ===============================
   // DEPENDENCY INJECTION
@@ -29,6 +28,9 @@ class SnapPixelsController extends GetxController {
   MessageDisplayController get _messageController =>
       Get.find<MessageDisplayController>();
   SnapRepository get _snapRepository => Get.find<SnapRepository>();
+  StorageService get _storageService => Get.find<StorageService>();
+  String get adAccountId => _storageService.selectedAdAccount?.id ?? '';
+  String get adAccountName => _storageService.selectedAdAccount?.name ?? '';
 
   // ===============================
   // LIFECYCLE METHODS
@@ -38,9 +40,7 @@ class SnapPixelsController extends GetxController {
   void onInit() {
     super.onInit();
     // Get ad account info from arguments
-    final arguments = Get.arguments as Map<String, dynamic>?;
-    adAccountId = arguments?['adAccountId'] ?? '';
-    adAccountName = arguments?['adAccountName'] ?? 'Ad Account';
+
     _initializeController();
   }
 

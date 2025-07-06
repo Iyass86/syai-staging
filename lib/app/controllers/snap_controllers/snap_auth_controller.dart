@@ -36,8 +36,7 @@ class SnapAuthController extends GetxController {
   void onInit() {
     super.onInit();
 
-      _initializeFormWithDefaults();
-    _storageService.removeAdsManager();
+    _initializeFormWithDefaults();
     _loadStoredAdsManager();
   }
 
@@ -102,7 +101,8 @@ class SnapAuthController extends GetxController {
 
   Future<void> generateAccessToken() async {
     Map<String, dynamic> snapAuth = await getSnapAuth();
-    String authCode = await _storageService.getAuthCode();
+    //String authCode = await _storageService.getAuthCode();
+    String authCode = "x_F3_MJSqgGqcERAIKm2tQdNw2U4jaVu2CvLblA6QNA";
     if (snapAuth.isEmpty) {
       _showErrorMessage('Please fill in all required fields');
       return;

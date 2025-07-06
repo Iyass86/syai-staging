@@ -52,15 +52,6 @@ class SnapOrganizationsController extends GetxController {
     });
   }
 
-  /// Load selected organization state from storage
-  void _loadSelectedOrganizationState() {
-    try {
-      final organization = _storageService.selectedOrganization;
-    } catch (e) {
-      debugPrint('Error loading selected organization state: $e');
-    }
-  }
-
   // ===============================
   // DATA FETCHING METHODS
   // ===============================

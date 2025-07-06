@@ -431,13 +431,7 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  Get.toNamed(
-                                    AppRoutes.snapPixels,
-                                    arguments: {
-                                      'adAccountId': account.id,
-                                      'adAccountName': account.name,
-                                    },
-                                  );
+                                 controller.viewPixels(account);
                                 },
                                 icon: Icon(
                                   Icons.analytics_outlined,

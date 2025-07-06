@@ -122,7 +122,11 @@ class SnapAuthPage extends GetView<SnapAuthController> {
               _buildDivider(),
               const SizedBox(height: 32),
               _buildOAuthSignUp(),
-
+              ElevatedButton.icon(
+                onPressed: controller.generateAccessToken,
+                icon: Icon(Icons.login),
+                label: Text('Test Login with Snap'),
+              ),
               const SizedBox(height: 24),
               // Check pixel tracking setup
               QuickSnapPixelButton(

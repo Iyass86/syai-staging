@@ -240,4 +240,12 @@ class SnapAccountsController extends GetxController {
     _storageService.saveSelectedAdAccount(account);
     Get.toNamed(AppRoutes.chat);
   }
+
+  void viewPixels(AdAccount account) {
+    _storageService.saveSelectedAdAccount(account);
+    Get.toNamed(AppRoutes.snapPixels, arguments: {
+      'adAccountId': account.id,
+      'adAccountName': account.name,
+    });
+  }
 }
