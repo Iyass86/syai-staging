@@ -25,7 +25,8 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
   String _statusMessage = 'Processing Snapchat authentication...';
   String _detailMessage = 'Please wait while we complete your Snapchat login.';
   bool _hasError = false;
-
+  SnapAuthController get snapAuthController => Get.find<SnapAuthController>();
+  String currentUrl = '';
   @override
   void initState() {
     super.initState();
@@ -85,7 +86,7 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
   Future<void> _handleSnapCallback() async {
     try {
       // Get the current URL
-      final currentUrl = html.window.location.href;
+      currentUrl = html.window.location.href;
 
       // Use the controller's callback handler
       await _snapAuthController.handleOAuthCallback(currentUrl);
@@ -172,7 +173,7 @@ class _SnapOAuthCallbackPageState extends State<SnapOAuthCallbackPage>
                               color: const Color(0xFFFFFC00),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.snapchat,
                               size: 32,
                               color: Colors.black,

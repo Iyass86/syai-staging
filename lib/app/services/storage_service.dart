@@ -92,4 +92,20 @@ class StorageService {
     if (data == null || data.isEmpty) return null;
     return AdAccount.fromJson(data);
   }
+
+  Future<void> saveSnapAuth(Map<String, dynamic> mapData) async {
+    _box.write("snap_auth_v2", mapData);
+  }
+
+  Future<Map<String, dynamic>> getSnapAuth() async {
+    return _box.read<Map<String, dynamic>>("snap_auth_v2") ?? {};
+  }
+
+  Future<String> getAuthCode() async {
+    return _box.read<String>("auth_code") ?? '';
+  }
+
+  Future<void> saveAuthCode(String code) async {
+    await _box.write("auth_code", code);
+  }
 }

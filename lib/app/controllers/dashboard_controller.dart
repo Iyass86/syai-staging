@@ -100,6 +100,7 @@ class DashboardController extends GetxController {
   // Save current view to storage
   void _saveCurrentView() {
     _storage.write(_currentViewKey, currentView.value);
+    update();
   }
 
   void loadMarketingData() {

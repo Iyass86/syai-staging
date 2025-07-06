@@ -5,7 +5,6 @@ import 'package:flutter_oauth_chat/app/controllers/message_display_controller.da
 import 'package:flutter_oauth_chat/app/ui/widgets/message_display_container.dart';
 import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
 import 'package:get/get.dart';
-import '../../routes/app_routes.dart';
 
 class SnapAuthPage extends GetView<SnapAuthController> {
   const SnapAuthPage({Key? key}) : super(key: key);
@@ -140,18 +139,19 @@ class SnapAuthPage extends GetView<SnapAuthController> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Client ID Field
-              _buildFormField(
+              _buildFormFieldWithInfo(
                 controller: controller.clientIdController,
                 labelText: 'client_id'.tr,
                 hintText: 'enter_client_id'.tr,
                 prefixIcon: Icons.app_registration_outlined,
                 validator: (value) => _requiredValidator(value, 'client_id'.tr),
                 colorScheme: colorScheme,
+                infoText: 'client_id_info'.tr,
               ),
               const SizedBox(height: 24),
 
               // Client Secret Field
-              _buildFormField(
+              _buildFormFieldWithInfo(
                 controller: controller.clientSecretController,
                 labelText: 'client_secret'.tr,
                 hintText: 'enter_client_secret'.tr,
@@ -159,40 +159,187 @@ class SnapAuthPage extends GetView<SnapAuthController> {
                 validator: (value) =>
                     _requiredValidator(value, 'client_secret'.tr),
                 colorScheme: colorScheme,
+                infoText: 'client_secret_info'.tr,
               ),
               const SizedBox(height: 24),
-
+              // Redirect URI information
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      colorScheme.primaryContainer.withOpacity(0.3),
+                      colorScheme.secondaryContainer.withOpacity(0.2),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: colorScheme.primary.withOpacity(0.2),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorScheme.shadow.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.link_outlined,
+                            size: 20,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'redirect_uri'.tr,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: colorScheme.primary,
+                                ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => _showInfoDialog(
+                              'redirect_uri'.tr, 'redirect_uri_info'.tr),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.info_outline,
+                              size: 18,
+                              color: colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: colorScheme.outline.withOpacity(0.2),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.code_outlined,
+                            size: 16,
+                            color: colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              SnapAuthController.defaultRedirectUri,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color:
+                                        colorScheme.onSurface.withOpacity(0.9),
+                                    fontFamily: 'monospace',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => _copyToClipboard(
+                                SnapAuthController.defaultRedirectUri),
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.copy_outlined,
+                                size: 16,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.lightbulb_outline,
+                          size: 16,
+                          color: colorScheme.primary.withOpacity(0.7),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'use_this_uri_in_snap_console'.tr,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: colorScheme.onSurface.withOpacity(0.7),
+                                  fontStyle: FontStyle.italic,
+                                  height: 1.3,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
               // URL Field
-              _buildFormField(
-                controller: controller.redirectUriController,
-                labelText: 'url'.tr,
-                hintText: 'enter_redirect_url'.tr,
-                prefixIcon: Icons.link_outlined,
-                validator: (value) => _requiredValidator(value, 'url'.tr),
-                colorScheme: colorScheme,
-              ),
-              const SizedBox(height: 24),
+              // _buildFormField(
+              //   controller: controller.redirectUriController,
+              //   labelText: 'url'.tr,
+              //   hintText: 'enter_redirect_url'.tr,
+              //   prefixIcon: Icons.link_outlined,
+              //   validator: (value) => _requiredValidator(value, 'url'.tr),
+              //   colorScheme: colorScheme,
+              // ),
 
-              // Redirect URI Field
-              _buildFormField(
-                controller: controller.urlCodeController,
-                labelText: 'redirect_uri'.tr,
-                hintText: 'enter_redirect_uri_code'.tr,
-                prefixIcon: Icons.code_outlined,
-                onChanged: (String? enteredUrl) {
-                  final String? code =
-                      controller.extractQueryParameter(enteredUrl, 'code');
-                  controller.urlCodeController.text = code ?? '';
-                  return null;
-                },
-                validator: (value) =>
-                    _requiredValidator(value, 'redirect_uri'.tr),
-                colorScheme: colorScheme,
-              ),
-              const SizedBox(height: 32),
-
-              // Submit Button
-              _buildSubmitButton(),
+              // // Redirect URI Field
+              // _buildFormField(
+              //   controller: controller.urlCodeController,
+              //   labelText: 'redirect_uri'.tr,
+              //   hintText: 'enter_redirect_uri_code'.tr,
+              //   prefixIcon: Icons.code_outlined,
+              //   onChanged: (String? enteredUrl) {
+              //     final String? code =
+              //         controller.extractQueryParameter(enteredUrl, 'code');
+              //     controller.urlCodeController.text = code ?? '';
+              //     return null;
+              //   },
+              //   validator: (value) =>
+              //       _requiredValidator(value, 'redirect_uri'.tr),
+              //   colorScheme: colorScheme,
+              // ),
             ],
           ),
         );
@@ -200,7 +347,7 @@ class SnapAuthPage extends GetView<SnapAuthController> {
     );
   }
 
-  Widget _buildFormField({
+  Widget _buildFormFieldWithInfo({
     required TextEditingController controller,
     required String labelText,
     String? hintText,
@@ -208,6 +355,7 @@ class SnapAuthPage extends GetView<SnapAuthController> {
     required String? Function(String?) validator,
     String? Function(String?)? onChanged,
     required ColorScheme colorScheme,
+    required String infoText,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +373,7 @@ class SnapAuthPage extends GetView<SnapAuthController> {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () => _showInfoDialog(labelText, infoText),
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -290,57 +438,6 @@ class SnapAuthPage extends GetView<SnapAuthController> {
       return '$fieldName ${'is_required'.tr}';
     }
     return null;
-  }
-
-  Widget _buildSubmitButton() {
-    return Builder(
-      builder: (context) {
-        final colorScheme = Theme.of(context).colorScheme;
-
-        return Obx(() {
-          return Container(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                elevation: controller.isLoading.value ? 0 : 2,
-                shadowColor: colorScheme.primary.withOpacity(0.3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              onPressed: controller.isLoading.value
-                  ? null
-                  : () => _validateAndSubmit(),
-              child: controller.isLoading.value
-                  ? SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: colorScheme.onPrimary,
-                      ),
-                    )
-                  : Text(
-                      'connect_account'.tr,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
-          );
-        });
-      },
-    );
-  }
-
-  void _validateAndSubmit() {
-    if (controller.formKey.currentState?.validate() ?? false) {
-      controller.generateAccessToken();
-    }
   }
 
   Widget _buildDivider() {
@@ -426,7 +523,7 @@ class SnapAuthPage extends GetView<SnapAuthController> {
                       color: colorScheme.onSecondaryContainer,
                     ),
               label: Text(
-                'get_code_oauth'.tr,
+                'connect_account'.tr,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,

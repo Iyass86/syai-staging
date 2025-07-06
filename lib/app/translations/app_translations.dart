@@ -247,7 +247,8 @@ class AppTranslations extends Translations {
     'image_shared': 'Image shared',
 
     // Authentication & Forms
-    'welcome_to_oauth_chat': 'Welcome to OAuth Chat',
+    'welcome_to_oauth_chat': 'Welcome to SyAi',
+    'sign_in_subtitle': 'Sign in to access your AI-powered marketing dashboard',
     'password': 'Password',
     'login_with_email': 'Login with Email',
     'create_account': 'Create an Account',
@@ -317,6 +318,14 @@ class AppTranslations extends Translations {
     'connect_account': 'Connect Account',
     'sign_in': 'Sign In',
     'get_code_oauth': 'Get Code via OAuth',
+    'client_id_info':
+        'To get your Client ID:\n1. Go to Snapchat Ads Manager\n2. Navigate to Business Settings\n3. Click on API/SDK\n4. Create a new app or select existing one\n5. Copy the Client ID from the app details',
+    'client_secret_info':
+        'To get your Client Secret:\n1. Go to Snapchat Ads Manager\n2. Navigate to Business Settings\n3. Click on API/SDK\n4. Select your app\n5. Copy the Client Secret (keep it secure and never share it publicly)',
+    'redirect_uri_info':
+        'This is the redirect URI you need to configure in your Snapchat app:\n1. Go to Snapchat Ads Manager\n2. Navigate to Business Settings\n3. Click on API/SDK\n4. Select your app\n5. Add this URI to the Redirect URIs list\n6. Save your changes',
+    'copied': 'Copied',
+    'redirect_uri_copied': 'Redirect URI copied to clipboard',
   };
 
   // Arabic translations
@@ -558,7 +567,9 @@ class AppTranslations extends Translations {
     'image_shared': 'تم مشاركة الصورة',
 
     // Authentication & Forms
-    'welcome_to_oauth_chat': 'مرحباً بك في OAuth Chat',
+    'welcome_to_oauth_chat': 'مرحباً بك في SyAi',
+    'sign_in_subtitle':
+        'قم بتسجيل الدخول للوصول إلى لوحة التحكم التسويقية المدعومة بالذكاء الاصطناعي',
     'password': 'كلمة المرور',
     'login_with_email': 'تسجيل الدخول بالبريد الإلكتروني',
     'create_account': 'إنشاء حساب',
@@ -627,5 +638,13 @@ class AppTranslations extends Translations {
     'connect_account': 'ربط الحساب',
     'sign_in': 'تسجيل الدخول',
     'get_code_oauth': 'الحصول على الكود عبر OAuth',
+    'client_id_info':
+        'للحصول على معرف العميل:\n1. انتقل إلى مدير إعلانات سناب شات\n2. اذهب إلى إعدادات الأعمال\n3. اضغط على API/SDK\n4. أنشئ تطبيقاً جديداً أو اختر موجوداً\n5. انسخ معرف العميل من تفاصيل التطبيق',
+    'client_secret_info':
+        'للحصول على سر العميل:\n1. انتقل إلى مدير إعلانات سناب شات\n2. اذهب إلى إعدادات الأعمال\n3. اضغط على API/SDK\n4. اختر تطبيقك\n5. انسخ سر العميل (احتفظ به آمناً ولا تشاركه علنياً)',
+    'redirect_uri_info':
+        'هذا هو رابط إعادة التوجيه الذي تحتاج لتكوينه في تطبيق سناب شات:\n1. انتقل إلى مدير إعلانات سناب شات\n2. اذهب إلى إعدادات الأعمال\n3. اضغط على API/SDK\n4. اختر تطبيقك\n5. أضف هذا الرابط إلى قائمة روابط إعادة التوجيه\n6. احفظ التغييرات',
+    'copied': 'تم النسخ',
+    'redirect_uri_copied': 'تم نسخ رابط إعادة التوجيه',
   };
 }
