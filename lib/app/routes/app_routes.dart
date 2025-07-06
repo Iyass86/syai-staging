@@ -17,4 +17,5 @@ abstract class AppRoutes {
   static const snapAccounts = '/snap-accounts';
   static const snapOrganizations = '/snap-organizations';
   static const errorTest = '/error-test';
+  static const snapPixelSetup = '/snap-pixel-setup';
 }

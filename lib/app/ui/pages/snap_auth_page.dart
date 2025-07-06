@@ -4,6 +4,7 @@ import 'package:flutter_oauth_chat/app/controllers/snap_controllers/snap_auth_co
 import 'package:flutter_oauth_chat/app/controllers/message_display_controller.dart';
 import 'package:flutter_oauth_chat/app/ui/widgets/message_display_container.dart';
 import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
+import 'package:flutter_oauth_chat/app/ui/widgets/snap_pixel_setup_button.dart';
 import 'package:get/get.dart';
 
 class SnapAuthPage extends GetView<SnapAuthController> {
@@ -121,6 +122,12 @@ class SnapAuthPage extends GetView<SnapAuthController> {
               _buildDivider(),
               const SizedBox(height: 32),
               _buildOAuthSignUp(),
+
+              const SizedBox(height: 24),
+              // Check pixel tracking setup
+              QuickSnapPixelButton(
+                clientId: controller.clientIdController.text,
+              ),
             ],
           ),
         ),

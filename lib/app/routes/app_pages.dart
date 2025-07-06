@@ -4,6 +4,7 @@ import 'package:flutter_oauth_chat/app/ui/pages/social_media_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_organizations_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_oauth_callback_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/error_test_page.dart';
+import 'package:flutter_oauth_chat/app/ui/pages/snap_pixel_setup_page.dart';
 import 'package:get/get.dart';
 
 // Feature pages
@@ -107,6 +108,16 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.errorTest,
       page: () => const ErrorTestPage(),
+    ),
+    GetPage(
+      name: AppRoutes.snapPixelSetup,
+      page: () {
+        final clientId = Get.parameters['clientId'] ?? 'default-client';
+        return SnapPixelSetupPage(clientId: clientId);
+      },
+      middlewares: [
+        MiddlewareManager.registeredOnly(AppRoutes.snapPixelSetup),
+      ],
     ),
   ];
 }
