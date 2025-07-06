@@ -3,6 +3,7 @@ import 'package:flutter_oauth_chat/app/controllers/auth_controller.dart';
 import 'package:flutter_oauth_chat/app/controllers/register_controller.dart';
 import 'package:get/get.dart';
 import '../../routes/app_routes.dart';
+import '../widgets/message_display_container.dart';
 
 class RegisterPage extends GetView<RegisterController> {
   const RegisterPage({Key? key}) : super(key: key);
@@ -13,33 +14,35 @@ class RegisterPage extends GetView<RegisterController> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    colorScheme.surface.withOpacity(0.95),
-                    colorScheme.background.withOpacity(0.9),
-                  ]
-                : [
-                    colorScheme.primary.withOpacity(0.08),
-                    colorScheme.secondary.withOpacity(0.05),
-                  ],
+      body: MessageDisplayContainer(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? [
+                      colorScheme.surface.withOpacity(0.95),
+                      colorScheme.background.withOpacity(0.9),
+                    ]
+                  : [
+                      colorScheme.primary.withOpacity(0.08),
+                      colorScheme.secondary.withOpacity(0.05),
+                    ],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal:
-                    MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
-                vertical: 32.0,
-              ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: _buildCard(context),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal:
+                      MediaQuery.of(context).size.width > 600 ? 64.0 : 24.0,
+                  vertical: 32.0,
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: _buildCard(context),
+                ),
               ),
             ),
           ),

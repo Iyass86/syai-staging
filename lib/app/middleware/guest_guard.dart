@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
+import '../controllers/message_display_controller.dart';
 import '../routes/app_routes.dart';
 
 /// GuestGuard middleware for protecting guest-only routes (login, register)
@@ -8,6 +9,9 @@ import '../routes/app_routes.dart';
 class GuestGuard extends GetMiddleware {
   final String? routeKey;
   final String redirectTo;
+
+  MessageDisplayController get _messageController =>
+      Get.find<MessageDisplayController>();
 
   GuestGuard({
     this.routeKey,
@@ -24,10 +28,8 @@ class GuestGuard extends GetMiddleware {
         // If user is already authenticated, redirect to dashboard or specified route
         if (authController.isAuthenticated.value) {
           debugPrint('Authenticated user trying to access guest route: $route');
-          Get.snackbar(
-            'Already Logged In',
-            'You are already authenticated.',
-            snackPosition: SnackPosition.BOTTOM,
+          _messageController.displayInfo(
+            'أنت مسجل دخول بالفعل.',
             duration: const Duration(seconds: 2),
           );
           return RouteSettings(

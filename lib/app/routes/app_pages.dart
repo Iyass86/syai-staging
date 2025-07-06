@@ -3,6 +3,7 @@ import 'package:flutter_oauth_chat/app/ui/pages/snap_auth_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/social_media_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_organizations_page.dart';
 import 'package:flutter_oauth_chat/app/ui/pages/snap_oauth_callback_page.dart';
+import 'package:flutter_oauth_chat/app/ui/pages/error_test_page.dart';
 import 'package:get/get.dart';
 
 // Feature pages
@@ -102,6 +103,10 @@ abstract class AppPages {
       middlewares: [
         MiddlewareManager.registeredOnly(AppRoutes.snapOrganizations),
       ],
+    ),
+    GetPage(
+      name: AppRoutes.errorTest,
+      page: () => const ErrorTestPage(),
     ),
   ];
 }

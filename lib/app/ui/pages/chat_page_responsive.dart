@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/chat_controller.dart';
+import '../../controllers/message_display_controller.dart';
 import '../widgets/chat_message_list.dart';
 import '../widgets/theme_toggle_button.dart';
+import '../widgets/message_display_container.dart';
 
 class ChatPageResponsive extends GetView<ChatController> {
   const ChatPageResponsive({Key? key}) : super(key: key);
+
+  MessageDisplayController get _messageController =>
+      Get.find<MessageDisplayController>();
 
   @override
   Widget build(BuildContext context) {
@@ -1386,13 +1391,8 @@ class ChatPageResponsive extends GetView<ChatController> {
                                 : 20,
                       ),
                       onPressed: () {
-                        Get.snackbar(
-                          'coming_soon'.tr,
-                          'Emoji picker will be available soon!',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: colorScheme.primaryContainer,
-                          colorText: colorScheme.onPrimaryContainer,
-                        );
+                        _messageController.displayInfo(
+                            'قريباً، سيتم إضافة أداة اختيار الرموز التعبيرية!');
                       },
                       style: IconButton.styleFrom(
                         backgroundColor: colorScheme.surfaceContainerHighest

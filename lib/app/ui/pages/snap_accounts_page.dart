@@ -4,6 +4,7 @@ import 'package:flutter_oauth_chat/app/data/models/ad_account.dart';
 import 'package:flutter_oauth_chat/app/data/models/ad_accounts_response.dart';
 import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
 import 'package:get/get.dart';
+import '../widgets/message_display_container.dart';
 
 class SnapAccountsPage extends StatefulWidget {
   const SnapAccountsPage({super.key});
@@ -49,17 +50,19 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
         builder: (controller) => Scaffold(
               backgroundColor: colorScheme.surface,
               appBar: _buildAppBar(context, controller, colorScheme),
-              body: Container(
-                color: colorScheme.surface,
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        _buildErrorDisplay(controller, colorScheme),
-                        _buildMainContent(controller, colorScheme),
-                      ],
+              body: MessageDisplayContainer(
+                child: Container(
+                  color: colorScheme.surface,
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          _buildErrorDisplay(controller, colorScheme),
+                          _buildMainContent(controller, colorScheme),
+                        ],
+                      ),
                     ),
                   ),
                 ),
