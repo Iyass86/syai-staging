@@ -10,7 +10,6 @@ import 'package:flutter_oauth_chat/app/repositories/snap_repository.dart';
 import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
 import 'package:flutter_oauth_chat/app/services/storage_service.dart';
 import 'package:flutter_oauth_chat/app/utils/constants.dart';
-import '../message_display_controller.dart';
 
 /// Controller responsible for managing the addition and configuration of Ads Managers
 /// Handles OAuth flow, token generation, and CRUD operations for Ads Manager entities
@@ -26,8 +25,9 @@ class SnapAuthController extends GetxController {
 
   static const String _defaultGrantType = 'authorization_code';
 
-  MessageDisplayController get _messageController =>
-      Get.find<MessageDisplayController>();
+  // ===============================
+  // FORM CONTROLLERS & OBSERVABLES
+  // ===============================
 
   final TextEditingController clientIdController = TextEditingController();
   final TextEditingController clientSecretController = TextEditingController();
@@ -558,18 +558,53 @@ class SnapAuthController extends GetxController {
   }
 
   void _showSuccessMessage(String message) {
-    _messageController.displaySuccess(message);
+    Get.snackbar(
+      'Success',
+      message,
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.green.withOpacity(0.1),
+      colorText: Colors.green,
+    );
   }
 
   void _showErrorMessage(String message) {
-    _messageController.displayError(message,
-        duration: const Duration(seconds: 4));
+    Get.snackbar(
+      'Error',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red.withOpacity(0.1),
+      colorText: Colors.red,
+      duration: const Duration(seconds: 4),
+    );
   }
 
   void _showNetworkErrorMessage() {
-    _messageController.displayNetworkError(
-      'فشل الاتصال. يرجى التحقق من:\n• الاتصال بالإنترنت\n• إعدادات الجدار الناري\n• إعدادات VPN\n• حاول تحديث الصفحة',
+    Get.snackbar(
+      'Network Error',
+      'Connection failed. Please check:\n• Internet connection\n• Firewall settings\n• VPN configuration\n• Try refreshing the page',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.orange.withOpacity(0.1),
+      colorText: Colors.orange,
       duration: const Duration(seconds: 6),
+      messageText: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Connection failed. Please check:',
+            style: TextStyle(
+                color: Colors.orange[700], fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          Text('• Internet connection',
+              style: TextStyle(color: Colors.orange[700])),
+          Text('• Firewall settings',
+              style: TextStyle(color: Colors.orange[700])),
+          Text('• VPN configuration',
+              style: TextStyle(color: Colors.orange[700])),
+          Text('• Try refreshing the page',
+              style: TextStyle(color: Colors.orange[700])),
+        ],
+      ),
     );
   }
 

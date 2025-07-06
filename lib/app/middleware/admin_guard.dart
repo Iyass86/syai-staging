@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
-import '../controllers/message_display_controller.dart';
 import '../routes/app_routes.dart';
 import '../services/storage_service.dart';
 
@@ -10,9 +9,6 @@ import '../services/storage_service.dart';
 class AdminGuard extends GetMiddleware {
   final String? routeKey;
   final List<String> allowedRoles;
-
-  MessageDisplayController get _messageController =>
-      Get.find<MessageDisplayController>();
 
   AdminGuard({
     this.routeKey,
@@ -71,8 +67,12 @@ class AdminGuard extends GetMiddleware {
 
       if (userRole == null || !allowedRoles.contains(userRole)) {
         debugPrint('Insufficient admin permissions for route: $route');
-        _messageController.displayError(
-          'مطلوبة صلاحيات المدير للوصول إلى هذه الميزة.',
+        Get.snackbar(
+          'Access Denied',
+          'Administrator privileges required to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.shade100,
+          colorText: Colors.red.shade800,
           duration: const Duration(seconds: 5),
         );
         return RouteSettings(

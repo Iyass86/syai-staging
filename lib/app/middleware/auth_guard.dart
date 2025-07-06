@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
-import '../controllers/message_display_controller.dart';
 import '../routes/app_routes.dart';
 import '../services/storage_service.dart';
 
@@ -74,8 +73,10 @@ class AuthGuard extends GetMiddleware {
       // Skip email verification for guest users
       if (requiresVerification && !isGuest && user.emailConfirmedAt == null) {
         debugPrint('User email not verified, access denied');
-        Get.find<MessageDisplayController>().displayError(
+        Get.snackbar(
+          'Email Verification Required',
           'Please verify your email before accessing this feature.',
+          snackPosition: SnackPosition.BOTTOM,
           duration: const Duration(seconds: 5),
         );
         return RouteSettings(
@@ -91,9 +92,15 @@ class AuthGuard extends GetMiddleware {
       // Check if guests are allowed on this route
       if (isGuest && !allowGuests) {
         debugPrint('Guest access not allowed for route: $route');
-        Get.find<MessageDisplayController>().displayError(
+        Get.snackbar(
+          'Account Required',
           'Please create an account to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
           duration: const Duration(seconds: 5),
+          mainButton: TextButton(
+            onPressed: () => Get.toNamed(AppRoutes.register),
+            child: const Text('Sign Up'),
+          ),
         );
         return RouteSettings(
           name: AppRoutes.dashboard,
@@ -110,13 +117,21 @@ class AuthGuard extends GetMiddleware {
 
           // Special message for guests
           if (isGuest) {
-            Get.find<MessageDisplayController>().displayError(
+            Get.snackbar(
+              'Account Required',
               'Please create an account to access premium features.',
+              snackPosition: SnackPosition.BOTTOM,
               duration: const Duration(seconds: 5),
+              mainButton: TextButton(
+                onPressed: () => Get.toNamed(AppRoutes.register),
+                child: const Text('Upgrade'),
+              ),
             );
           } else {
-            Get.find<MessageDisplayController>().displayError(
+            Get.snackbar(
+              'Access Denied',
               'You don\'t have permission to access this feature.',
+              snackPosition: SnackPosition.BOTTOM,
               duration: const Duration(seconds: 3),
             );
           }

@@ -11,7 +11,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import '../data/models/chat_message.dart';
 import 'auth_controller.dart';
-import 'message_display_controller.dart';
 
 class ChatController extends GetxController {
   AuthController _authController = Get.find<AuthController>();
@@ -41,8 +40,6 @@ class ChatController extends GetxController {
   // Getters
   AuthController get authController => _authController;
   StorageService get _storageService => Get.find<StorageService>();
-  MessageDisplayController get _messageController =>
-      Get.find<MessageDisplayController>();
 
   // Lifecycle Methods
   @override
@@ -121,7 +118,11 @@ class ChatController extends GetxController {
       _scrollToBottom();
     } catch (e) {
       debugPrint('Error loading messages: $e');
-      _messageController.displayError('فشل في تحميل الرسائل');
+      Get.snackbar(
+        'Error',
+        'Failed to load messages',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -135,7 +136,11 @@ class ChatController extends GetxController {
   Future<void> sendWebhookData() async {
     final text = messageController.text.trim();
     if (text.isEmpty) {
-      _messageController.displayError('لا يمكن أن تكون الرسالة فارغة');
+      Get.snackbar(
+        'Error',
+        'Message cannot be empty',
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     } // Generate a unique message ID
 
@@ -236,7 +241,13 @@ class ChatController extends GetxController {
       }
     } catch (e) {
       debugPrint('Error picking image: $e');
-      _messageController.displayError('فشل في اختيار الصورة: ${e.toString()}');
+      Get.snackbar(
+        'Error',
+        'Failed to pick image: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.errorContainer,
+        colorText: Get.theme.colorScheme.onErrorContainer,
+      );
     } finally {
       isUploadingImage.value = false;
     }
@@ -332,10 +343,22 @@ class ChatController extends GetxController {
       // Send image to webhook (optional)
       await _sendImageToWebhook(imageUrl);
 
-      _messageController.displaySuccess('تم رفع الصورة بنجاح');
+      Get.snackbar(
+        'Success',
+        'Image uploaded successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.primaryContainer,
+        colorText: Get.theme.colorScheme.onPrimaryContainer,
+      );
     } catch (e) {
       debugPrint('Error uploading image: $e');
-      _messageController.displayError('فشل في رفع الصورة: ${e.toString()}');
+      Get.snackbar(
+        'Upload Failed',
+        'Failed to upload image: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.errorContainer,
+        colorText: Get.theme.colorScheme.onErrorContainer,
+      );
     }
   }
 

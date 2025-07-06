@@ -6,7 +6,6 @@ import '../../controllers/theme_controller.dart';
 import '../../controllers/dashboard_controller.dart';
 import '../../controllers/language_controller.dart';
 import '../../controllers/auth_controller.dart';
-import '../../controllers/message_display_controller.dart';
 import '../../services/export_service.dart';
 
 class _NavigationItem {
@@ -53,13 +52,22 @@ class AppNavigationHelper {
                           final dashboardController =
                               Get.find<DashboardController>();
                           dashboardController.refreshData();
-                          Get.find<MessageDisplayController>().displaySuccess(
-                            'تم تحديث بيانات لوحة التحكم',
+                          Get.snackbar(
+                            'refreshing'.tr,
+                            'dashboard_data_updated'.tr,
+                            icon:
+                                const Icon(Icons.refresh, color: Colors.white),
+                            backgroundColor: Colors.teal,
+                            colorText: Colors.white,
                             duration: const Duration(seconds: 2),
                           );
                         } catch (e) {
-                          Get.find<MessageDisplayController>().displayError(
-                            'خطأ: $e',
+                          Get.snackbar(
+                            'error'.tr,
+                            '${'error'.tr}: $e',
+                            icon: const Icon(Icons.error, color: Colors.white),
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
                             duration: const Duration(seconds: 3),
                           );
                         }
@@ -684,14 +692,22 @@ class AppNavigationHelper {
                   try {
                     await ExportService.exportAsXLSX();
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displaySuccess(
-                      'تم تصدير ملف XLSX بنجاح!',
+                    Get.snackbar(
+                      'export_successful'.tr,
+                      'XLSX file downloaded successfully!',
+                      icon: const Icon(Icons.check_circle, color: Colors.white),
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 3),
                     );
                   } catch (e) {
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displayError(
-                      'فشل تصدير XLSX: $e',
+                    Get.snackbar(
+                      'export_failed'.tr,
+                      'XLSX export failed: $e',
+                      icon: const Icon(Icons.error, color: Colors.white),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 4),
                     );
                   }
@@ -709,14 +725,22 @@ class AppNavigationHelper {
                   try {
                     await ExportService.exportAsPDF();
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displaySuccess(
-                      'تم تحميل ملف PDF بنجاح!',
+                    Get.snackbar(
+                      'export_successful'.tr,
+                      'pdf_downloaded'.tr,
+                      icon: const Icon(Icons.check_circle, color: Colors.white),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 3),
                     );
                   } catch (e) {
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displayError(
-                      'فشل تصدير PDF: $e',
+                    Get.snackbar(
+                      'export_failed'.tr,
+                      '${'export_pdf_failed'.tr}: $e',
+                      icon: const Icon(Icons.error, color: Colors.white),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 4),
                     );
                   }
@@ -734,14 +758,22 @@ class AppNavigationHelper {
                   try {
                     await ExportService.exportAsJSON();
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displaySuccess(
-                      'تم تحميل ملف JSON بنجاح!',
+                    Get.snackbar(
+                      'export_successful'.tr,
+                      'json_downloaded'.tr,
+                      icon: const Icon(Icons.check_circle, color: Colors.white),
+                      backgroundColor: Colors.purple,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 3),
                     );
                   } catch (e) {
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displayError(
-                      'فشل تصدير JSON: $e',
+                    Get.snackbar(
+                      'export_failed'.tr,
+                      '${'export_json_failed'.tr}: $e',
+                      icon: const Icon(Icons.error, color: Colors.white),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 4),
                     );
                   }
@@ -759,14 +791,22 @@ class AppNavigationHelper {
                   try {
                     await ExportService.testExport();
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displaySuccess(
-                      'تم اختبار التصدير بنجاح!',
+                    Get.snackbar(
+                      'Test Successful',
+                      'Test export completed successfully!',
+                      icon: const Icon(Icons.check_circle, color: Colors.white),
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 3),
                     );
                   } catch (e) {
                     Get.back(); // Close loading dialog
-                    Get.find<MessageDisplayController>().displayError(
-                      'فشل اختبار التصدير: $e',
+                    Get.snackbar(
+                      'Test Failed',
+                      'Test export failed: $e',
+                      icon: const Icon(Icons.error, color: Colors.white),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
                       duration: const Duration(seconds: 4),
                     );
                   }
@@ -1107,8 +1147,13 @@ class AppNavigationHelper {
                           language['code'],
                           language['countryCode'],
                         );
-                        Get.find<MessageDisplayController>().displaySuccess(
-                          'تم تغيير اللغة إلى ${language['nameNative']}',
+                        Get.snackbar(
+                          'success'.tr,
+                          '${'language_changed'.tr} ${language['nameNative']}',
+                          icon: const Icon(Icons.check_circle,
+                              color: Colors.white),
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
                           duration: const Duration(seconds: 2),
                         );
                       },

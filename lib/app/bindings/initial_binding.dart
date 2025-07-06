@@ -15,7 +15,6 @@ import 'package:flutter_oauth_chat/app/repositories/user_repository.dart';
 import 'package:flutter_oauth_chat/app/services/supabase_service.dart';
 
 import '../controllers/theme_controller.dart';
-import '../controllers/message_display_controller.dart';
 import '../services/api_service.dart';
 import '../services/storage_service.dart';
 
@@ -49,8 +48,6 @@ class InitialBinding extends Bindings {
         fenix: true);
 
     Get.lazyPut<ThemeController>(() => ThemeController(), fenix: true);
-    Get.put<MessageDisplayController>(MessageDisplayController(),
-        permanent: true);
     Get.lazyPut<ApiService>(() => ApiService(), fenix: true);
     Get.lazyPut<StorageService>(() => StorageService(), fenix: true);
 
