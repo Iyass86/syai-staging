@@ -29,7 +29,7 @@ class SnapApiConfig {
       _storageService.snapTokenResponse?.accessToken;
   static Map<String, String> get snapHeader {
     return {
-      'Authorization': 'Bearer $accessTokenExamples',
+      'Authorization': 'Bearer $accessToken',
       'Content-Type': 'application/json',
     };
   }
