@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_oauth_chat/app/routes/app_routes.dart';
+import 'package:flutter_oauth_chat/app/services/storage_service.dart';
 import 'package:get/get.dart';
 import '../widgets/message_display_container.dart';
 
@@ -69,10 +70,17 @@ class SocialMediaPage extends StatelessWidget {
         .toList();
   }
 
+  StorageService get _storageService => Get.find<StorageService>();
+
   void _handlePlatformTap(_PlatformData platform) {
     HapticFeedback.lightImpact();
-
-    Get.toNamed(AppRoutes.snapAuth);
+    if (_storageService.snapTokenResponse?.accessToken.isNotEmpty ?? false) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.toNamed(AppRoutes.snapOrganizations);
+      });
+    } else {
+      Get.toNamed(AppRoutes.snapAuth);
+    }
   }
 }
 

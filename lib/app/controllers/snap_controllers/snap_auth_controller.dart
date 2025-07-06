@@ -35,15 +35,10 @@ class SnapAuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (_storageService.snapTokenResponse?.accessToken.isNotEmpty ?? false) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Get.offNamed(AppRoutes.snapOrganizations);
-      });
-    } else {
+
       _initializeFormWithDefaults();
-      _storageService.removeAdsManager();
-      _loadStoredAdsManager();
-    }
+    _storageService.removeAdsManager();
+    _loadStoredAdsManager();
   }
 
   @override
