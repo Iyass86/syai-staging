@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_accounts_controller.dart';
-import 'package:flutter_oauth_chat/core/models/ad_account.dart';
 import 'package:flutter_oauth_chat/core/models/ad_accounts_response.dart';
 import 'package:flutter_oauth_chat/core/routes/app_routes.dart';
 import 'package:get/get.dart';
 import '../chat/widgets/message_display_container.dart';
+import '../../shared_widgets/enhanced_list_view.dart';
 
 class SnapAccountsPage extends StatefulWidget {
   const SnapAccountsPage({super.key});
@@ -283,11 +283,19 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
           ),
           // Accounts list
           Expanded(
-            child: ListView.separated(
-              itemCount: response.adAccounts.length,
+            child: EnhancedListView.separated(
+              items: response.adAccounts,
               separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final item = response.adAccounts[index];
+              emptyTitle: "No Ad Accounts Found",
+              emptyMessage:
+                  "You don't have any Snapchat ad accounts connected yet. Please connect your account to get started.",
+              emptyIcon: Icons.account_balance_wallet_outlined,
+              emptyActionText: "Connect Account",
+              onEmptyAction: () {
+                // Handle connect account action
+                Get.toNamed(AppRoutes.snapAuth);
+              },
+              itemBuilder: (context, item, index) {
                 final account = item.adAccount;
                 final isActive = account.status == 'ACTIVE';
 

@@ -4,6 +4,7 @@ import 'package:positioned_scroll_observer/positioned_scroll_observer.dart';
 import '../../../../core/controllers/chat_controller.dart';
 import '../../../../core/models/chat_message.dart';
 import 'chat_message_widget.dart';
+import '../../../shared_widgets/enhanced_list_view.dart';
 
 class ChatMessageList extends StatelessWidget {
   final ChatController controller;
@@ -35,20 +36,25 @@ class ChatMessageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: scrollController,
+    return EnhancedListView<ChatMessage>(
+      items: messages.cast<ChatMessage>(),
+      scrollController: scrollController,
       padding: const EdgeInsets.only(
         left: 16,
         right: 16,
         top: 24,
         bottom: 48,
       ),
-      itemCount: messages.length,
-      itemBuilder: (context, index) {
-        final messageIndex = index;
-        final message = messages[messageIndex] as ChatMessage;
-        final isLastMessage = messageIndex == messages.length;
-
+      emptyTitle: "Start a Conversation",
+      emptyMessage:
+          "Ask me anything about your marketing campaigns and performance",
+      emptyIcon: Icons.chat_bubble_outline,
+      emptyActionText: "Get Started",
+      onEmptyAction: () {
+        // Could trigger showing sample questions or focus input
+      },
+      itemBuilder: (context, message, index) {
+        final isLastMessage = index == messages.length - 1;
         return _buildMessageItem(message, isLastMessage, index);
       },
     );

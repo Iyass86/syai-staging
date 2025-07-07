@@ -4,6 +4,7 @@ import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_pixels
 import 'package:flutter_oauth_chat/core/models/pixel.dart';
 import 'package:get/get.dart';
 import '../chat/widgets/message_display_container.dart';
+import '../../shared_widgets/enhanced_list_view.dart';
 
 class SnapPixelsPage extends StatefulWidget {
   const SnapPixelsPage({super.key});
@@ -293,11 +294,19 @@ class _SnapPixelsPageState extends State<SnapPixelsPage>
           ),
           // Pixels list
           Expanded(
-            child: ListView.separated(
-              itemCount: response.pixels.length,
+            child: EnhancedListView.separated(
+              items: response.pixels,
               separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final item = response.pixels[index];
+              emptyTitle: "No Pixels Found",
+              emptyMessage:
+                  "You haven't created any Snapchat pixels yet. Create your first pixel to start tracking conversions.",
+              emptyIcon: Icons.code_outlined,
+              emptyActionText: "Create Pixel",
+              onEmptyAction: () {
+                // Handle refresh action
+                controller.refreshPixels();
+              },
+              itemBuilder: (context, item, index) {
                 final pixel = item.pixel;
                 final isActive = pixel.isActive;
 

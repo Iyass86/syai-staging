@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_accounts_controller.dart';
 import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_auth_controller.dart';
 import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_organizations_controller.dart';
 import 'package:flutter_oauth_chat/core/models/organization.dart';
-import 'package:flutter_oauth_chat/core/routes/app_routes.dart';
 import 'package:get/get.dart';
 import '../chat/widgets/message_display_container.dart';
+import '../../shared_widgets/enhanced_list_view.dart';
 
 class SnapOrganizationsPage extends StatefulWidget {
   const SnapOrganizationsPage({super.key});
@@ -300,13 +299,20 @@ class _SnapOrganizationsPageState extends State<SnapOrganizationsPage>
           ),
           // Organizations list
           Expanded(
-            child: ListView.separated(
-              itemCount: response.organizations.length,
+            child: EnhancedListView.separated(
+              items: response.organizations,
               separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final item = response.organizations[index];
+              emptyTitle: "No Organizations Found",
+              emptyMessage:
+                  "You don't have access to any Snapchat organizations. Please contact your Snapchat account manager.",
+              emptyIcon: Icons.business_outlined,
+              emptyActionText: "Refresh",
+              onEmptyAction: () {
+                // Handle refresh action
+                controller.refreshOrganizations();
+              },
+              itemBuilder: (context, item, index) {
                 final organization = item.organization;
-                final isActive = true;
 
                 return Card(
                   margin: EdgeInsets.zero,
@@ -320,8 +326,7 @@ class _SnapOrganizationsPageState extends State<SnapOrganizationsPage>
                           // Avatar
                           CircleAvatar(
                             radius: 24,
-                            backgroundColor:
-                                isActive ? Colors.green : Colors.orange,
+                            backgroundColor: Colors.green,
                             child: Text(
                               organization.name.isNotEmpty
                                   ? organization.name[0].toUpperCase()
@@ -358,19 +363,15 @@ class _SnapOrganizationsPageState extends State<SnapOrganizationsPage>
                                         vertical: 4,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: isActive
-                                            ? Colors.green.withOpacity(0.1)
-                                            : Colors.orange.withOpacity(0.1),
+                                        color: Colors.green.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
-                                        "${isActive ? 'Active' : 'Inactive'}",
+                                        "Active",
                                         style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.w600,
-                                          color: isActive
-                                              ? Colors.green.shade700
-                                              : Colors.orange.shade700,
+                                          color: Colors.green.shade700,
                                         ),
                                       ),
                                     ),
