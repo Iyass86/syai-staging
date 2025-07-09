@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_oauth_chat/core/controllers/snap_controllers/snap_valid_token_controller.dart';
 import 'package:flutter_oauth_chat/core/models/ad_account.dart';
-import 'package:flutter_oauth_chat/core/models/ad_accounts_response.dart';
 import 'package:flutter_oauth_chat/core/services/storage_service.dart';
 import 'package:get/get.dart';
 import 'package:positioned_scroll_observer/positioned_scroll_observer.dart';
@@ -23,6 +22,7 @@ class ChatController extends GetxController {
   final isWaitingForResponse = false.obs;
   final lastMessageId = ''.obs;
   final isUploadingImage = false.obs;
+  final hasText = false.obs; // لتتبع حالة النص في حقل الإدخال
 
   // Session Management
   final _sessionId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -49,6 +49,12 @@ class ChatController extends GetxController {
   void onInit() {
     super.onInit();
     adAccountItem = _storageService.selectedAdAccount;
+
+    // إضافة listener لحقل النص لتتبع التغييرات
+    messageController.addListener(() {
+      hasText.value = messageController.text.trim().isNotEmpty;
+    });
+
     _initializeSupabase();
     _loadMessages();
     // Add scroll listener for pagination
@@ -86,8 +92,10 @@ class ChatController extends GetxController {
             debugPrint('Received message from Supabase');
             final message = ChatMessage.fromJson(
                 Map<String, dynamic>.from(payload.newRecord));
-            // Remove messages with null id before adding the new message
-            messages.removeWhere((msg) => msg.id == null);
+
+            // Remove thinking message and messages with null id before adding the new message
+            messages.removeWhere(
+                (msg) => msg.id == null || msg.message?.type == 'ai_thinking');
             messages.add(message);
 
             if (message.message?.type != 'ai') {
@@ -134,13 +142,7 @@ class ChatController extends GetxController {
   // Function to send the POST request
   Future<void> sendWebhookData() async {
     final text = messageController.text.trim();
-    if (text.isEmpty) {
-      _messageController.displayError('لا يمكن أن تكون الرسالة فارغة');
-      return;
-    } // Generate a unique message ID
-
-    // Add user message to chat and clear input
-    final chatMessage = ChatMessage(
+    final userMessage = ChatMessage(
       message: Message(
         type: 'user_local',
         content: text,
@@ -150,8 +152,24 @@ class ChatController extends GetxController {
       adAccountId: adAccountItem?.id,
       organizationId: adAccountItem?.organizationId,
     );
-    messages.add(chatMessage);
+    messages.add(userMessage);
     messageController.clear();
+
+    // Add temporary "thinking" message
+    final thinkingMessage = ChatMessage(
+      message: Message(
+        type: 'ai_thinking',
+        content: 'يكتب...',
+      ),
+      sessionId: _sessionId,
+      createdAt: DateTime.now(),
+      adAccountId: adAccountItem?.id,
+      organizationId: adAccountItem?.organizationId,
+    );
+    messages.add(thinkingMessage);
+
+    // Add user message to chat and clear input
+
     _scrollToBottom();
 
     // Set waiting state
@@ -184,10 +202,14 @@ class ChatController extends GetxController {
       if (response.statusCode != 200) {
         debugPrint(
             'Failed to send data. Status Code: ${response.statusCode}, Response: ${response.data}');
+        // Remove thinking message on error
+        messages.removeWhere((msg) => msg.message?.type == 'ai_thinking');
         isWaitingForResponse.value = false;
       }
     } catch (e) {
       debugPrint('Error sending webhook: $e');
+      // Remove thinking message on error
+      messages.removeWhere((msg) => msg.message?.type == 'ai_thinking');
       isWaitingForResponse.value = false;
     }
   }
@@ -198,10 +220,16 @@ class ChatController extends GetxController {
 
   void _scrollToBottom() {
     WidgetsBinding.instance.scheduleFrameCallback((_) {
-      observer.jumpToIndex(
-        messages.length - 1,
-        position: scrollController.position,
-      );
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (scrollController.hasClients &&
+            messages.isNotEmpty &&
+            messages.length > 2) {
+          observer.jumpToIndex(
+            messages.length - 1,
+            position: scrollController.position,
+          );
+        }
+      });
     });
   }
 

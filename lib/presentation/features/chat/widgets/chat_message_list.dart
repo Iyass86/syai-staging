@@ -21,6 +21,10 @@ class ChatMessageList extends StatelessWidget {
   });
 
   Widget _buildMessageItem(ChatMessage message, bool isLastMessage, int index) {
+    // تحديد ما إذا كانت هذه آخر رسالة من AI
+    bool isLastAiMessage = !isWaitingForResponse &&
+        (messages.lastOrNull as ChatMessage).id == message.id &&
+        message.lastMessageFromAi;
     return ObserverProxy(
       observer: controller.observer,
       child: Padding(
@@ -29,6 +33,7 @@ class ChatMessageList extends StatelessWidget {
         child: ChatMessageWidget(
           message: message,
           isLoading: isLastMessage && isWaitingForResponse,
+          isLastAiMessage: isLastAiMessage,
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'package:flutter_oauth_chat/presentation/features/chat/chat_demo_page.dart';
+import 'package:flutter_oauth_chat/presentation/features/chat/chat_page_new.dart';
 import 'package:flutter_oauth_chat/presentation/features/snap_integration/snap_accounts_page.dart';
 import 'package:flutter_oauth_chat/presentation/features/snap_integration/snap_auth_page.dart';
 import 'package:flutter_oauth_chat/presentation/features/social_media/social_media_page.dart';
@@ -9,7 +11,6 @@ import 'package:flutter_oauth_chat/presentation/features/snap_integration/snap_p
 import 'package:get/get.dart';
 
 // Feature pages
-import '../../presentation/features/chat/chat_page.dart';
 import '../../presentation/features/dashboard/dashboard_page.dart';
 import '../../presentation/features/auth/login_page.dart';
 import '../../presentation/features/auth/register_page.dart';
@@ -128,6 +129,10 @@ abstract class AppPages {
       middlewares: [
         MiddlewareManager.registeredOnly(AppRoutes.snapPixels),
       ],
+    ),
+    GetPage(
+      name: AppRoutes.chatsDemo,
+      page: () => const ChatDemoPage(),
     ),
   ];
 }

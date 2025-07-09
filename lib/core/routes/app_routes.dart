@@ -19,4 +19,5 @@ abstract class AppRoutes {
   static const snapPixels = '/snap-pixels';
   static const errorTest = '/error-test';
   static const snapPixelSetup = '/snap-pixel-setup';
+  static const chatsDemo = '/chats-demo';
 }

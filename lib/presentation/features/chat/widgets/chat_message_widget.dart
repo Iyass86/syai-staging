@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/models/chat_message.dart';
+import '../../../features/chat/widgets/typewriter_text.dart';
 
 class ChatMessageWidget extends StatelessWidget {
   final ChatMessage message;
   final bool isLoading;
+  final bool isLastAiMessage; // إضافة جديدة
 
   const ChatMessageWidget({
     super.key,
     required this.message,
     this.isLoading = false,
+    this.isLastAiMessage = false, // قيمة افتراضية
   });
 
   bool get isFromCurrentUser => message.message?.isFromCurrentUser ?? true;
@@ -138,6 +141,19 @@ class ChatMessageWidget extends StatelessWidget {
 
   Widget _buildTextMessage(
       BuildContext context, ThemeData theme, String content) {
+    // إذا كانت هذه آخر رسالة من الـ AI وليس من المستخدم، استخدم تأثير الكتابة
+    if (isLastAiMessage && !isFromCurrentUser && !isLoading) {
+      return TypewriterAnimatedText(
+        text: content,
+        style: theme.textTheme.bodyLarge?.copyWith(
+          color: theme.colorScheme.onSurface,
+          height: 1.4,
+        ),
+        speed: const Duration(milliseconds: 25), // سرعة أسرع قليلاً
+      );
+    }
+
+    // خلاف ذلك، اعرض النص عادي
     return SelectableText(
       content,
       style: theme.textTheme.bodyLarge?.copyWith(

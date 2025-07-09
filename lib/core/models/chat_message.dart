@@ -35,6 +35,8 @@ class ChatMessage {
         organizationId: json["organization_id"],
       );
 
+  bool get lastMessageFromAi => message?.isFromCurrentUser == false;
+
   Map<String, dynamic> toJson() => {
         "id": id,
         "session_id": sessionId,
@@ -84,7 +86,7 @@ class Message {
       );
 
   bool get isFromCurrentUser => type != 'ai';
-
+  
   Map<String, dynamic> toJson() => {
         "type": type,
         "content": content,
