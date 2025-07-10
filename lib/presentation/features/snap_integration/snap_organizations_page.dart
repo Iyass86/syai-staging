@@ -48,7 +48,6 @@ class _SnapOrganizationsPageState extends State<SnapOrganizationsPage>
     return GetBuilder<SnapOrganizationsController>(
         builder: (controller) => Scaffold(
               backgroundColor: colorScheme.surface,
-              appBar: _buildAppBar(context, controller, colorScheme),
               body: MessageDisplayContainer(
                 child: Container(
                   decoration: BoxDecoration(
@@ -65,136 +64,166 @@ class _SnapOrganizationsPageState extends State<SnapOrganizationsPage>
                     opacity: _fadeAnimation,
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Enhanced Hero Section
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(32),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(24),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  const Color(0xFFFFFC00).withOpacity(0.1),
-                                  const Color(0xFFFFFC00).withOpacity(0.05),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: const Color(0xFFFFFC00).withOpacity(0.2),
-                                width: 1,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color(0xFFFFFC00).withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFFFFFC00),
-                                            Color(0xFFE6D700)
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(20),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: const Color(0xFFFFFC00)
-                                                .withOpacity(0.4),
-                                            blurRadius: 15,
-                                            offset: const Offset(0, 5),
-                                          ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.business_rounded,
-                                        color: Colors.black,
-                                        size: 36,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Organizations',
-                                            style: Get.textTheme.headlineLarge
-                                                ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: colorScheme.onSurface,
-                                              letterSpacing: -0.5,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            'Select your Snapchat organization to unlock powerful advertising tools and insights.',
-                                            style: Get.textTheme.bodyLarge
-                                                ?.copyWith(
-                                              color: colorScheme.onSurface
-                                                  .withOpacity(0.7),
-                                              height: 1.5,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width > 1200
+                                ? MediaQuery.of(context).size.width * 0.15
+                                : MediaQuery.of(context).size.width > 800
+                                    ? 80.0
+                                    : 20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Enhanced Hero Section
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(32),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    const Color(0xFFFFFC00).withOpacity(0.1),
+                                    const Color(0xFFFFFC00).withOpacity(0.05),
                                   ],
                                 ),
-                              ],
+                                border: Border.all(
+                                  color:
+                                      const Color(0xFFFFFC00).withOpacity(0.2),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFFFFC00)
+                                        .withOpacity(0.1),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFFFFFC00),
+                                              Color(0xFFE6D700)
+                                            ],
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFFFFFC00)
+                                                  .withOpacity(0.4),
+                                              blurRadius: 15,
+                                              offset: const Offset(0, 5),
+                                            ),
+                                          ],
+                                        ),
+                                        child: const Icon(
+                                          Icons.business_rounded,
+                                          color: Colors.black,
+                                          size: 36,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Organizations',
+                                              style: Get.textTheme.headlineLarge
+                                                  ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: colorScheme.onSurface,
+                                                letterSpacing: -0.5,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'Select your Snapchat organization to unlock powerful advertising tools and insights.',
+                                              style: Get.textTheme.bodyLarge
+                                                  ?.copyWith(
+                                                color: colorScheme.onSurface
+                                                    .withOpacity(0.7),
+                                                height: 1.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 32),
-                          _buildErrorDisplay(controller, colorScheme),
-                          _buildMainContent(controller, colorScheme),
-                        ],
+                            const SizedBox(height: 32),
+                            _buildErrorDisplay(controller, colorScheme),
+                            // Add disconnect button
+                            Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(bottom: 24),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          colorScheme.error,
+                                          colorScheme.error.withOpacity(0.8),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: colorScheme.error
+                                              .withOpacity(0.3),
+                                          blurRadius: 15,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ElevatedButton.icon(
+                                      onPressed: () =>
+                                          _showDisconnectDialog(context),
+                                      icon: const Icon(Icons.logout_outlined,
+                                          size: 16),
+                                      label: const Text('Disconnect Snapchat'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.transparent,
+                                        foregroundColor: colorScheme.onError,
+                                        elevation: 0,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            _buildMainContent(controller, colorScheme),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ));
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context,
-      SnapOrganizationsController controller, ColorScheme colorScheme) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: colorScheme.surface,
-      foregroundColor: colorScheme.onSurface,
-      automaticallyImplyLeading: false,
-      actions: [
-        // Disconnect Snap Auth Button
-        IconButton(
-          onPressed: () => _showDisconnectDialog(context),
-          icon: Icon(
-            Icons.logout_outlined,
-            color: colorScheme.error,
-            size: 22,
-          ),
-          tooltip: 'Disconnect Snapchat',
-          style: IconButton.styleFrom(
-            backgroundColor: colorScheme.errorContainer.withOpacity(0.1),
-            foregroundColor: colorScheme.error,
-            padding: const EdgeInsets.all(8),
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _buildErrorDisplay(

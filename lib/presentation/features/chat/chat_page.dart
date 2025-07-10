@@ -25,22 +25,34 @@ class ChatPage extends GetView<ChatController> {
                 constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
             final isMobile = constraints.maxWidth <= 768;
 
-            return Obx(() {
-              // Simple layout: centered input when empty, normal layout when messages exist
-              if (controller.messages.isEmpty) {
-                return _buildEmptyStateLayout(
-                    colorScheme, isDesktop, isTablet, isMobile);
-              } else {
-                return Column(
-                  children: [
-                    _buildLoadingStatus(colorScheme),
-                    Expanded(child: _buildMessagesList(colorScheme)),
-                    _buildMessageInputCard(
-                        colorScheme, isDesktop, isTablet, isMobile),
-                  ],
-                );
-              }
-            });
+            // Web padding for better desktop/tablet experience
+            final webPadding = EdgeInsets.symmetric(
+              horizontal: isDesktop
+                  ? constraints.maxWidth * 0.15 // 15% padding on desktop
+                  : isTablet
+                      ? constraints.maxWidth * 0.1 // 10% padding on tablet
+                      : 0, // No extra padding on mobile
+            );
+
+            return Padding(
+              padding: webPadding,
+              child: Obx(() {
+                // Simple layout: centered input when empty, normal layout when messages exist
+                if (controller.messages.isEmpty) {
+                  return _buildEmptyStateLayout(
+                      colorScheme, isDesktop, isTablet, isMobile);
+                } else {
+                  return Column(
+                    children: [
+                      _buildLoadingStatus(colorScheme),
+                      Expanded(child: _buildMessagesList(colorScheme)),
+                      _buildMessageInputCard(
+                          colorScheme, isDesktop, isTablet, isMobile),
+                    ],
+                  );
+                }
+              }),
+            );
           },
         ),
       ),
@@ -53,62 +65,99 @@ class ChatPage extends GetView<ChatController> {
       backgroundColor: colorScheme.surface,
       foregroundColor: colorScheme.onSurface,
       automaticallyImplyLeading: false,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'SyAi Chat',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-              ),
+      title: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 1200;
+          final isTablet =
+              constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
+
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isDesktop
+                  ? constraints.maxWidth * 0.15
+                  : isTablet
+                      ? constraints.maxWidth * 0.1
+                      : 0,
+              vertical: 4,
             ),
-            Obx(() {
-              final user = controller.authController.currentUser.value;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: user != null ? Colors.green : colorScheme.error,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      user?.userMetadata?['name'] ?? 'مستخدم غير معروف',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                        color: colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'SyAi Chat',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
-              );
-            }),
-          ],
-        ),
+                Obx(() {
+                  final user = controller.authController.currentUser.value;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color:
+                                user != null ? Colors.green : colorScheme.error,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          user?.userMetadata?['name'] ?? 'مستخدم غير معروف',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ),
+          );
+        },
       ),
       actions: [
-        IconButton(
-          icon: Icon(Icons.refresh, color: colorScheme.onSurface),
-          onPressed: controller.refreshMessages,
-          tooltip: 'تحديث الرسائل',
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isDesktop = constraints.maxWidth > 1200;
+            final isTablet =
+                constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
+
+            return Padding(
+              padding: EdgeInsets.only(
+                right: isDesktop
+                    ? constraints.maxWidth * 0.15 + 8
+                    : isTablet
+                        ? constraints.maxWidth * 0.1 + 8
+                        : 8,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.refresh, color: colorScheme.onSurface),
+                    onPressed: controller.refreshMessages,
+                    tooltip: 'تحديث الرسائل',
+                  ),
+                  const ThemeToggleButton(),
+                  IconButton(
+                    icon: Icon(Icons.logout, color: colorScheme.error),
+                    onPressed: () => _showLogoutDialog(),
+                    tooltip: 'تسجيل الخروج',
+                  ),
+                ],
+              ),
+            );
+          },
         ),
-        const ThemeToggleButton(),
-        IconButton(
-          icon: Icon(Icons.logout, color: colorScheme.error),
-          onPressed: () => _showLogoutDialog(),
-          tooltip: 'تسجيل الخروج',
-        ),
-        const SizedBox(width: 8),
       ],
     );
   }
@@ -666,7 +715,7 @@ class ChatPage extends GetView<ChatController> {
                           ),
                           SizedBox(width: isDesktop ? 10 : 8),
                           Text(
-                            'SyAi يكتب...',
+                            '... SyAi يكتب',
                             style: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.8),
                               fontSize: isDesktop

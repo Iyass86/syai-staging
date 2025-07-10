@@ -47,7 +47,6 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
 
     return GetBuilder<SnapAccountsController>(
         builder: (controller) => Scaffold(
-              appBar: _buildAppBar(context, controller, colorScheme),
               body: MessageDisplayContainer(
                 child: Container(
                   decoration: BoxDecoration(
@@ -63,115 +62,116 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
                   ),
                   child: FadeTransition(
                     opacity: _fadeAnimation,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Hero Section with Animation
-                          Container(
-                            padding: const EdgeInsets.all(32),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Get.theme.colorScheme.primary
-                                      .withOpacity(0.1),
-                                  Get.theme.colorScheme.secondary
-                                      .withOpacity(0.05),
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Get.theme.colorScheme.shadow
-                                      .withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: Get.theme.colorScheme.primary,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Get.theme.colorScheme.primary
-                                                .withOpacity(0.3),
-                                            blurRadius: 15,
-                                            offset: const Offset(0, 5),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Icon(
-                                        Icons.account_balance_wallet_rounded,
-                                        color: Get.theme.colorScheme.onPrimary,
-                                        size: 32,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Ad Accounts',
-                                            style: Get.textTheme.headlineLarge
-                                                ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Get
-                                                  .theme.colorScheme.onSurface,
-                                              letterSpacing: -0.5,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            'Select your Snapchat ad account to manage your campaigns and view analytics.',
-                                            style: Get.textTheme.bodyLarge
-                                                ?.copyWith(
-                                              color: Get
-                                                  .theme.colorScheme.onSurface
-                                                  .withOpacity(0.7),
-                                              height: 1.5,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width > 1200
+                              ? MediaQuery.of(context).size.width * 0.15
+                              : MediaQuery.of(context).size.width > 800
+                                  ? 80.0
+                                  : 20.0),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Hero Section with Animation
+                            Container(
+                              padding: const EdgeInsets.all(32),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Get.theme.colorScheme.primary
+                                        .withOpacity(0.1),
+                                    Get.theme.colorScheme.secondary
+                                        .withOpacity(0.05),
                                   ],
                                 ),
-                              ],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Get.theme.colorScheme.shadow
+                                        .withOpacity(0.1),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: Get.theme.colorScheme.primary,
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Get
+                                                  .theme.colorScheme.primary
+                                                  .withOpacity(0.3),
+                                              blurRadius: 15,
+                                              offset: const Offset(0, 5),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Icon(
+                                          Icons.account_balance_wallet_rounded,
+                                          color:
+                                              Get.theme.colorScheme.onPrimary,
+                                          size: 32,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Ad Accounts',
+                                              style: Get.textTheme.headlineLarge
+                                                  ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: Get.theme.colorScheme
+                                                    .onSurface,
+                                                letterSpacing: -0.5,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'Select your Snapchat ad account to manage your campaigns and view analytics.',
+                                              style: Get.textTheme.bodyLarge
+                                                  ?.copyWith(
+                                                color: Get
+                                                    .theme.colorScheme.onSurface
+                                                    .withOpacity(0.7),
+                                                height: 1.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 40),
-                          _buildErrorDisplay(controller, colorScheme),
-                          _buildMainContent(controller, colorScheme),
-                        ],
+                            const SizedBox(height: 40),
+                            _buildErrorDisplay(controller, colorScheme),
+                            _buildMainContent(controller, colorScheme),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ));
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context,
-      SnapAccountsController controller, ColorScheme colorScheme) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: colorScheme.surface,
-      foregroundColor: colorScheme.onSurface,
-      automaticallyImplyLeading: false,
-    );
   }
 
   Widget _buildErrorDisplay(

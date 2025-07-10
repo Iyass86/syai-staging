@@ -158,7 +158,7 @@ class ChatController extends GetxController {
     // Add temporary "thinking" message
     final thinkingMessage = ChatMessage(
       message: Message(
-        type: 'ai_thinking',
+        type: 'ai',
         content: 'يكتب...',
       ),
       sessionId: _sessionId,
