@@ -615,7 +615,7 @@ class _AdAccountGridCardState extends State<_AdAccountGridCard> {
                   children: [
                     // Account avatar and pixels button row
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Account avatar with enhanced design
                         AnimatedContainer(
@@ -658,37 +658,6 @@ class _AdAccountGridCardState extends State<_AdAccountGridCard> {
                         ),
 
                         // Enhanced pixels button
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                widget.colorScheme.primary.withOpacity(0.1),
-                                widget.colorScheme.primary.withOpacity(0.05),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color:
-                                  widget.colorScheme.primary.withOpacity(0.2),
-                              width: 1,
-                            ),
-                          ),
-                          child: IconButton(
-                            onPressed: widget.onPixelsTap,
-                            icon: Icon(
-                              Icons.analytics_rounded,
-                              color: widget.colorScheme.primary,
-                              size: 18,
-                            ),
-                            tooltip: 'view_pixels'.tr,
-                            style: IconButton.styleFrom(
-                              padding: const EdgeInsets.all(6),
-                              minimumSize: const Size(32, 32),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
 
