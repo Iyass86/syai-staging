@@ -76,6 +76,7 @@ class _SnapPixelsPageState extends State<SnapPixelsPage>
       elevation: 0,
       backgroundColor: colorScheme.surface,
       foregroundColor: colorScheme.onSurface,
+      automaticallyImplyLeading: false,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

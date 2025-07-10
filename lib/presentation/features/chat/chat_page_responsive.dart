@@ -59,6 +59,7 @@ class ChatPageResponsive extends GetView<ChatController> {
       elevation: 0,
       backgroundColor: colorScheme.surface,
       foregroundColor: colorScheme.onSurface,
+      automaticallyImplyLeading: false,
       title: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Column(

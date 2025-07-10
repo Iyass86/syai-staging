@@ -49,17 +49,7 @@ class ChatPage extends GetView<ChatController> {
       elevation: 0,
       backgroundColor: colorScheme.surface,
       foregroundColor: colorScheme.onSurface,
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: colorScheme.onSurface,
-          size: 24,
-        ),
-        onPressed: () => Get.back(),
-        style: IconButton.styleFrom(
-          padding: EdgeInsets.all(8),
-        ),
-      ),
+      automaticallyImplyLeading: false,
       title: Text(
         'SyAi',
         style: TextStyle(

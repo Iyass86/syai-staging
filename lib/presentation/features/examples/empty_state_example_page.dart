@@ -47,6 +47,7 @@ class _EmptyStateExamplePageState extends State<EmptyStateExamplePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Empty State Examples'),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

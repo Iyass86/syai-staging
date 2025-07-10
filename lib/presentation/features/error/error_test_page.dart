@@ -14,6 +14,7 @@ class ErrorTestPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('اختبار عرض الأخطاء'),
         backgroundColor: Theme.of(context).colorScheme.surface,
+        automaticallyImplyLeading: false,
       ),
       body: MessageDisplayContainer(
         child: Padding(

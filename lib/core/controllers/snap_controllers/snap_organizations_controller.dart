@@ -79,12 +79,12 @@ class SnapOrganizationsController extends GetxController {
 
   void _handleSuccessfulResponse(OrganizationsResponse response) {
     organizationsResponse.value = response;
-    final organizationCount = response.organizations.length;
+    // final organizationCount = response.organizations.length;
 
-    _showSuccessMessage(
-      'Found $organizationCount organization${organizationCount == 1 ? '' : 's'}',
-      duration: _successSnackbarDuration,
-    );
+    // _showSuccessMessage(
+    //   'Found $organizationCount organization${organizationCount == 1 ? '' : 's'}',
+    //   duration: _successSnackbarDuration,
+    // );
   }
 
   void _handleSnapApiError(SnapApiException error) {

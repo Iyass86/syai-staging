@@ -12,62 +12,175 @@ class SocialMediaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MessageDisplayContainer(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ..._buildPlatformCards(),
-            ],
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Get.theme.colorScheme.surface,
+                Get.theme.colorScheme.surface.withOpacity(0.8),
+                Get.theme.colorScheme.primaryContainer.withOpacity(0.1),
+              ],
+            ),
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Hero Section with Animation
+                Container(
+                  padding: const EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Get.theme.colorScheme.primary.withOpacity(0.1),
+                        Get.theme.colorScheme.secondary.withOpacity(0.05),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Get.theme.colorScheme.shadow.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Get.theme.colorScheme.primary,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Get.theme.colorScheme.primary
+                                      .withOpacity(0.3),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.rocket_launch_rounded,
+                              color: Get.theme.colorScheme.onPrimary,
+                              size: 32,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Social Platforms',
+                                  style: Get.textTheme.headlineLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Get.theme.colorScheme.onSurface,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Connect your social platforms to SyAI and unlock the power of intelligent ad management.',
+                                  style: Get.textTheme.bodyLarge?.copyWith(
+                                    color: Get.theme.colorScheme.onSurface
+                                        .withOpacity(0.7),
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _buildPlatformGrid(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  List<Widget> _buildPlatformCards() {
+  Widget _buildPlatformGrid() {
     final platforms = [
       _PlatformData(
         name: 'Snapchat',
         description: 'snapchat_description'.tr,
         icon: Icons.camera_alt_rounded,
         color: const Color(0xFFFFFC00),
-        isAvailable: true,
+        isConnected: true,
       ),
       _PlatformData(
         name: 'Facebook',
         description: 'facebook_description'.tr,
         icon: Icons.facebook_rounded,
         color: const Color(0xFF1877F2),
-        isAvailable: false,
+        isConnected: true,
       ),
       _PlatformData(
         name: 'Instagram',
         description: 'instagram_description'.tr,
         icon: Icons.camera_rounded,
         color: const Color(0xFFE4405F),
-        isAvailable: false,
+        isConnected: true,
       ),
       _PlatformData(
         name: 'TikTok',
         description: 'tiktok_description'.tr,
         icon: Icons.music_video_rounded,
         color: const Color(0xFF000000),
-        isAvailable: false,
+        isConnected: true,
+      ),
+      _PlatformData(
+        name: 'LinkedIn',
+        description: 'linkedin_description'.tr,
+        icon: Icons.business_rounded,
+        color: const Color(0xFF0077B5),
+        isConnected: true,
+      ),
+      _PlatformData(
+        name: 'X',
+        description: 'x_description'.tr,
+        icon: Icons.close_rounded,
+        color: const Color(0xFF000000),
+        isConnected: true,
       ),
     ];
 
-    return platforms
-        .map((platform) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: _PlatformCard(
-                platform: platform,
-                onTap: platform.isAvailable
-                    ? () => _handlePlatformTap(platform)
-                    : null,
-              ),
-            ))
-        .toList();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate card width based on available space
+        final cardWidth =
+            (constraints.maxWidth - 32) / 3; // 3 cards per row with spacing
+        return Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: platforms
+              .map((platform) => SizedBox(
+                    width: cardWidth.clamp(180.0, 220.0), // Min 180, Max 220
+                    child: _PlatformGridCard(
+                      platform: platform,
+                      onTap: () => _handlePlatformTap(platform),
+                    ),
+                  ))
+              .toList(),
+        );
+      },
+    );
   }
 
   StorageService get _storageService => Get.find<StorageService>();
@@ -89,171 +202,205 @@ class _PlatformData {
   final String description;
   final IconData icon;
   final Color color;
-  final bool isAvailable;
+  final bool isConnected;
 
   _PlatformData({
     required this.name,
     required this.description,
     required this.icon,
     required this.color,
-    required this.isAvailable,
+    required this.isConnected,
   });
 }
 
-class _PlatformCard extends StatefulWidget {
+class _PlatformGridCard extends StatefulWidget {
   final _PlatformData platform;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
-  const _PlatformCard({
+  const _PlatformGridCard({
     required this.platform,
-    this.onTap,
+    required this.onTap,
   });
 
   @override
-  State<_PlatformCard> createState() => _PlatformCardState();
+  State<_PlatformGridCard> createState() => _PlatformGridCardState();
 }
 
-class _PlatformCardState extends State<_PlatformCard> {
+class _PlatformGridCardState extends State<_PlatformGridCard> {
   bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    final isAvailable = widget.platform.isAvailable;
-
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 300),
         transform: Matrix4.identity()
-          ..scale(_isHovered && isAvailable ? 1.02 : 1.0),
-        child: Card(
-          elevation: _isHovered && isAvailable ? 8 : 2,
-          shadowColor:
-              isAvailable ? widget.platform.color.withOpacity(0.3) : null,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
-              color: _isHovered && isAvailable
-                  ? widget.platform.color.withOpacity(0.5)
-                  : Colors.transparent,
-              width: 2,
+          ..scale(_isHovered ? 1.05 : 1.0)
+          ..rotateZ(_isHovered ? 0.01 : 0.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white,
+                Colors.white.withOpacity(0.9),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color:
+                    widget.platform.color.withOpacity(_isHovered ? 0.4 : 0.2),
+                blurRadius: _isHovered ? 25 : 15,
+                offset: Offset(0, _isHovered ? 15 : 8),
+                spreadRadius: _isHovered ? 2 : 0,
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
+            border: Border.all(
+              color: _isHovered
+                  ? widget.platform.color.withOpacity(0.6)
+                  : Colors.grey.withOpacity(0.1),
+              width: _isHovered ? 2 : 1,
             ),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
               onTap: widget.onTap,
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: Row(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Platform icon
-                    Container(
-                      width: 56,
-                      height: 56,
+                    // Platform icon with glassmorphism effect
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: _isHovered ? 65 : 60,
+                      height: _isHovered ? 65 : 60,
                       decoration: BoxDecoration(
-                        color: isAvailable
-                            ? widget.platform.color.withOpacity(0.1)
-                            : Colors.grey.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isAvailable
-                              ? widget.platform.color.withOpacity(0.3)
-                              : Colors.grey.withOpacity(0.3),
-                          width: 1,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            widget.platform.color.withOpacity(0.8),
+                            widget.platform.color.withOpacity(0.6),
+                          ],
                         ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.platform.color.withOpacity(0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
                       ),
-                      child: Stack(
-                        alignment: Alignment.center,
+                      child: Icon(
+                        widget.platform.icon,
+                        size: _isHovered ? 30 : 26,
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Platform name with better typography
+                    Text(
+                      widget.platform.name,
+                      style: Get.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Get.theme.colorScheme.onSurface,
+                        fontSize: 16,
+                        letterSpacing: 0.5,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Connected status with enhanced design
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: widget.platform.isConnected
+                              ? [
+                                  const Color(0xFF4CAF50),
+                                  const Color(0xFF45A049),
+                                ]
+                              : [
+                                  Colors.grey.shade400,
+                                  Colors.grey.shade500,
+                                ],
+                        ),
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.platform.isConnected
+                                ? const Color(0xFF4CAF50).withOpacity(0.3)
+                                : Colors.grey.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            widget.platform.icon,
-                            size: 28,
-                            color: isAvailable
-                                ? widget.platform.color
-                                : Colors.grey,
+                            widget.platform.isConnected
+                                ? Icons.check_circle_rounded
+                                : Icons.pending_rounded,
+                            color: Colors.white,
+                            size: 16,
                           ),
-                          if (!isAvailable)
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: Container(
-                                width: 16,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: Colors.orange,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(
-                                  Icons.schedule,
-                                  size: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(width: 16),
-
-                    // Platform info
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                          const SizedBox(width: 6),
                           Text(
-                            widget.platform.name,
-                            style: Get.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: isAvailable
-                                  ? Get.theme.colorScheme.onSurface
-                                  : Get.theme.colorScheme.onSurface
-                                      .withOpacity(0.6),
+                            widget.platform.isConnected
+                                ? 'Connected'
+                                : 'Not Connected',
+                            style: Get.textTheme.bodySmall?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            widget.platform.description,
-                            style: Get.textTheme.bodyMedium?.copyWith(
-                              color: Get.theme.colorScheme.onSurface
-                                  .withOpacity(0.7),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isAvailable
-                                  ? Colors.green.withOpacity(0.1)
-                                  : Colors.orange.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              isAvailable ? 'available'.tr : 'coming_soon'.tr,
-                              style: Get.textTheme.bodySmall?.copyWith(
-                                color:
-                                    isAvailable ? Colors.green : Colors.orange,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
 
-                    // Arrow or lock icon
-                    Icon(
-                      isAvailable
-                          ? Icons.arrow_forward_ios
-                          : Icons.lock_outline,
-                      size: 20,
-                      color: isAvailable ? widget.platform.color : Colors.grey,
+                    const SizedBox(height: 8),
+
+                    // Add a subtle action hint
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: _isHovered ? 1.0 : 0.6,
+                      child: Text(
+                        'Tap to manage',
+                        style: Get.textTheme.bodySmall?.copyWith(
+                          color: widget.platform.color,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
