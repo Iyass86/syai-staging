@@ -91,12 +91,12 @@ class SnapAccountsController extends GetxController {
 
   void _handleSuccessfulResponse(AdAccountsResponse response) {
     adAccountsResponse.value = response;
-    final accountCount = response.adAccounts.length;
+    // final accountCount = response.adAccounts.length;
 
-    _showSuccessMessage(
-      'Found $accountCount ad account${accountCount == 1 ? '' : 's'}',
-      duration: _successSnackbarDuration,
-    );
+    // _showSuccessMessage(
+    //   'Found $accountCount ad account${accountCount == 1 ? '' : 's'}',
+    //   duration: _successSnackbarDuration,
+    // );
   }
 
   void _handleSnapApiError(SnapApiException error) {
