@@ -102,7 +102,11 @@ class ChatController extends GetxController {
               isWaitingForResponse.value = false;
             }
             update(['chat_messages']);
-            _scrollToBottom();
+
+            // Delay scrolling to ensure the message is rendered
+            Future.delayed(const Duration(milliseconds: 300), () {
+              scrollToLatestMessage(animate: true);
+            });
           },
         )
         .subscribe(
@@ -126,7 +130,11 @@ class ChatController extends GetxController {
           (response as List).map((msg) => ChatMessage.fromJson(msg)).toList();
 
       messages.value = loadedMessages.reversed.toList();
-      _scrollToBottom();
+
+      // Delay scrolling to ensure messages are rendered
+      Future.delayed(const Duration(milliseconds: 500), () {
+        scrollToLatestMessage(animate: false); // No animation for initial load
+      });
     } catch (e) {
       debugPrint('Error loading messages: $e');
       _messageController.displayError('فشل في تحميل الرسائل');
@@ -170,7 +178,10 @@ class ChatController extends GetxController {
 
     // Add user message to chat and clear input
 
-    _scrollToBottom();
+    // Delay scrolling to ensure the message is rendered
+    Future.delayed(const Duration(milliseconds: 200), () {
+      scrollToLatestMessage(animate: true);
+    });
 
     // Set waiting state
     isWaitingForResponse.value = true;
@@ -218,19 +229,37 @@ class ChatController extends GetxController {
     sendWebhookData();
   }
 
-  void _scrollToBottom() {
+  // Scroll to specific message index using observer
+  void scrollToMessage(int index, {bool animate = true}) {
     WidgetsBinding.instance.scheduleFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 200), () {
-        if (scrollController.hasClients &&
-            messages.isNotEmpty &&
-            messages.length > 2) {
-          observer.jumpToIndex(
-            messages.length - 1,
-            position: scrollController.position,
-          );
+      if (messages.isNotEmpty && index >= 0 && index < messages.length) {
+        if (scrollController.hasClients) {
+          try {
+            if (animate) {
+              scrollController.animateTo(
+                scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            } else {
+              scrollController.jumpTo(scrollController
+                      .position.maxScrollExtent -
+                  (messages.length * 13.5)); // Adjust based on your item height
+            }
+          } catch (e) {
+            debugPrint('Error with fallback scroll: $e');
+          }
+          debugPrint('ScrollController has no clients');
         }
-      });
+      }
     });
+  }
+
+  // Scroll to latest message using observer
+  void scrollToLatestMessage({bool animate = true}) {
+    if (messages.isNotEmpty) {
+      scrollToMessage(messages.length - 1, animate: animate);
+    }
   }
 
   // Public Methods
@@ -355,7 +384,11 @@ class ChatController extends GetxController {
       );
 
       messages.add(chatMessage);
-      _scrollToBottom();
+
+      // Delay scrolling to ensure the message is rendered
+      Future.delayed(const Duration(milliseconds: 300), () {
+        scrollToLatestMessage(animate: true);
+      });
 
       // Send image to webhook (optional)
       await _sendImageToWebhook(imageUrl);

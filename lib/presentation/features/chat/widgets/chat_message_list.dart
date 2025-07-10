@@ -21,7 +21,6 @@ class ChatMessageList extends StatelessWidget {
   });
 
   Widget _buildMessageItem(ChatMessage message, bool isLastMessage, int index) {
-    // تحديد ما إذا كانت هذه آخر رسالة من AI
     bool isLastAiMessage = !isWaitingForResponse &&
         (messages.lastOrNull as ChatMessage).id == message.id &&
         message.lastMessageFromAi;

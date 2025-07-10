@@ -37,7 +37,7 @@ class ChatPageResponsive extends GetView<ChatController> {
                   Column(
                     children: [
                       _buildLoadingStatus(colorScheme),
-                      Expanded(child: _buildMessagesList(colorScheme)),
+                      Expanded(child: _buildMessagesList(colorScheme, context)),
                       _buildMessageInputCard(
                           colorScheme, isDesktop, isTablet, isMobile),
                     ],
@@ -1259,10 +1259,16 @@ class ChatPageResponsive extends GetView<ChatController> {
     });
   }
 
-  Widget _buildMessagesList(ColorScheme colorScheme) {
+  Widget _buildMessagesList(ColorScheme colorScheme, BuildContext context) {
     return Obx(() {
       return Container(
         color: colorScheme.surface,
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width > 1200
+                ? MediaQuery.of(context).size.width * 0.15
+                : MediaQuery.of(context).size.width > 800
+                    ? 80.0
+                    : 20.0),
         child: ChatMessageList(
           controller: controller,
           scrollController: controller.scrollController,
