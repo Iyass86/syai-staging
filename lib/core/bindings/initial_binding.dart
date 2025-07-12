@@ -18,6 +18,7 @@ import '../controllers/theme_controller.dart';
 import '../controllers/message_display_controller.dart';
 import '../services/api_service.dart';
 import '../services/storage_service.dart';
+import '../services/browser_navigation_service.dart';
 
 class InitialBinding extends Bindings {
   @override
@@ -53,6 +54,10 @@ class InitialBinding extends Bindings {
         permanent: true);
     Get.lazyPut<ApiService>(() => ApiService(), fenix: true);
     Get.lazyPut<StorageService>(() => StorageService(), fenix: true);
+
+    // Browser navigation service for web
+    Get.put<BrowserNavigationService>(BrowserNavigationService(),
+        permanent: true);
 
     // Controllers
     Get.put<AuthController>(AuthController());

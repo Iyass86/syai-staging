@@ -2,15 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_oauth_chat/core/models/ads_manager.dart';
 import 'package:flutter_oauth_chat/core/repositories/ads_managers_repository.dart';
+import 'package:flutter_oauth_chat/core/services/supabase_service.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:flutter_oauth_chat/core/repositories/user_repository.dart';
-import 'package:flutter_oauth_chat/core/services/supabase_service.dart';
-
-import '../routes/app_routes.dart';
+import '../repositories/user_repository.dart';
 import '../services/storage_service.dart';
+import '../services/browser_navigation_service.dart';
 import 'message_display_controller.dart';
+import '../routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final StorageService storageService = Get.find<StorageService>();
@@ -65,7 +65,8 @@ class AuthController extends GetxController {
       debugPrint('Login successful: ${authResponse.session?.accessToken}');
       isAuthenticated.value = true;
       _saveStoredCredentials(authResponse.user?.id);
-      Get.offNamed(AppRoutes.dashboard);
+      // Use browser navigation for post-auth navigation
+      BrowserNavigationService.navigateAfterAuth(AppRoutes.dashboard);
     }).catchError((error) {
       // Handle login error
       if (error is SupabaseException) {
@@ -106,7 +107,8 @@ class AuthController extends GetxController {
       debugPrint(
           'Registration successful: ${authResponse.session?.accessToken}');
       isAuthenticated.value = true;
-      Get.toNamed(AppRoutes.dashboard);
+      // Use browser navigation for post-auth navigation
+      BrowserNavigationService.navigateAfterAuth(AppRoutes.dashboard);
     }).catchError((error) {
       if (error is SupabaseException) {
         _messageController.displayError('خطأ في التسجيل: ${error.message}');
@@ -116,7 +118,7 @@ class AuthController extends GetxController {
     });
   }
 
-  void logout() {
+  Future<void> logout() async {
     final wasGuest = isGuest;
 
     isAuthenticated.value = false;
@@ -130,7 +132,7 @@ class AuthController extends GetxController {
 
     // Only call signOut for real users, not guests
     if (!wasGuest) {
-      Get.find<UserRepository>().signOut();
+      await Get.find<UserRepository>().signOut();
     }
 
     Get.offAllNamed(AppRoutes.login);
@@ -165,7 +167,7 @@ class AuthController extends GetxController {
           duration: const Duration(seconds: 4));
 
       // Navigate to dashboard
-      Get.offNamed(AppRoutes.dashboard);
+      BrowserNavigationService.navigateAfterAuth(AppRoutes.dashboard);
     } catch (error) {
       debugPrint('Error during guest login: ${error.toString()}');
       _messageController

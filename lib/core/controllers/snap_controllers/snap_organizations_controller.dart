@@ -5,6 +5,8 @@ import 'package:flutter_oauth_chat/core/repositories/snap_repository.dart';
 import 'package:flutter_oauth_chat/core/routes/app_routes.dart';
 import 'package:flutter_oauth_chat/core/services/storage_service.dart';
 import 'package:get/get.dart';
+
+import '../../services/browser_navigation_service.dart';
 import '../message_display_controller.dart';
 
 /// Controller responsible for managing organizations data and operations
@@ -188,13 +190,10 @@ class SnapOrganizationsController extends GetxController {
   /// Handle organization tap navigation
   void onTapOrganization(Organization organization) {
     try {
-      // Save the selected organization
       _storageService.saveOrganization(organization);
 
-      // Update reactive state
-
-      // Navigate to accounts page
-      Get.toNamed(AppRoutes.snapAccounts);
+      // Navigate to accounts page with proper history preservation
+      BrowserNavigationService.navigateToFeature(AppRoutes.snapAccounts);
 
       debugPrint(
           'Organization saved and navigation initiated: ${organization.name} (${organization.id})');

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_oauth_chat/core/routes/app_routes.dart';
-import 'package:flutter_oauth_chat/core/services/storage_service.dart';
 import 'package:get/get.dart';
+
+import '../../../core/routes/app_routes.dart';
+import '../../../core/services/storage_service.dart';
+import '../../../core/services/browser_navigation_service.dart';
 import '../chat/widgets/message_display_container.dart';
 
 class SocialMediaPage extends StatelessWidget {
@@ -189,10 +191,12 @@ class SocialMediaPage extends StatelessWidget {
     HapticFeedback.lightImpact();
     if (_storageService.snapTokenResponse?.accessToken.isNotEmpty ?? false) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Get.toNamed(AppRoutes.snapOrganizations);
+        // Navigate to organizations with proper history management
+        BrowserNavigationService.navigateToFeature(AppRoutes.snapOrganizations);
       });
     } else {
-      Get.toNamed(AppRoutes.snapAuth);
+      // Navigate to auth setup with proper history management
+      BrowserNavigationService.navigateToFeature(AppRoutes.snapAuth);
     }
   }
 }

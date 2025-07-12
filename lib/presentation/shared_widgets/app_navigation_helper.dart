@@ -203,9 +203,16 @@ class AppNavigationHelper {
                         // Use custom onTap action
                         item.onTap!();
                       } else if (item.route != null) {
-                        // Use route navigation
+                        // Use route navigation with proper history management
                         Get.back();
-                        Get.offNamed(item.route!);
+                        // Use toNamed for most navigation to preserve back button
+                        if (item.route == AppRoutes.dashboard) {
+                          // Dashboard can replace current route if coming from another main section
+                          Get.offNamed(item.route!);
+                        } else {
+                          // Other routes should preserve navigation history
+                          Get.toNamed(item.route!);
+                        }
                       }
                     },
               child: Container(

@@ -367,7 +367,9 @@ class SnapAuthController extends GetxController {
   }
 
   void _navigateToAdAccounts() {
-    Get.offAllNamed(AppRoutes.snapOrganizations);
+    // Navigate to organizations preserving some navigation history
+    // Use offNamed instead of offAllNamed to allow back navigation
+    Get.offNamed(AppRoutes.snapOrganizations);
   }
 
   void saveAuthCode(String code) {
