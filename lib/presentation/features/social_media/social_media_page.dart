@@ -189,9 +189,8 @@ class SocialMediaPage extends StatelessWidget {
 
   void _handlePlatformTap(_PlatformData platform) {
     HapticFeedback.lightImpact();
-    if (_storageService.snapTokenResponse?.accessToken.isNotEmpty ?? false) {
+    if (_storageService.snapTokenResponse != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Navigate to organizations with proper history management
         BrowserNavigationService.navigateToFeature(AppRoutes.snapOrganizations);
       });
     } else {
