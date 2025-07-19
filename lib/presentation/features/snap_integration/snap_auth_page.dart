@@ -116,7 +116,7 @@ class SnapAuthPage extends GetView<SnapAuthController> {
                       color: colorScheme.onSurface.withOpacity(0.7),
                     ),
                 textAlign: TextAlign.center,
-              ),
+              ),  
               const SizedBox(height: 48),
               _buildRegisterForm(),
               const SizedBox(height: 32),
@@ -131,9 +131,6 @@ class SnapAuthPage extends GetView<SnapAuthController> {
                 ),
               const SizedBox(height: 24),
               // Check pixel tracking setup
-              QuickSnapPixelButton(
-                clientId: controller.clientIdController.text,
-              ),
             ],
           ),
         ),
