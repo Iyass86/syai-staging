@@ -125,41 +125,47 @@ class SocialMediaPage extends StatelessWidget {
         icon: Icons.camera_alt_rounded,
         color: const Color(0xFFFFFC00),
         isConnected: true,
+        isAvailable: true,
       ),
       _PlatformData(
         name: 'Facebook',
         description: 'facebook_description'.tr,
         icon: Icons.facebook_rounded,
         color: const Color(0xFF1877F2),
-        isConnected: true,
+        isConnected: false,
+        isAvailable: false,
       ),
       _PlatformData(
         name: 'Instagram',
         description: 'instagram_description'.tr,
         icon: Icons.camera_rounded,
         color: const Color(0xFFE4405F),
-        isConnected: true,
+        isConnected: false,
+        isAvailable: false,
       ),
       _PlatformData(
         name: 'TikTok',
         description: 'tiktok_description'.tr,
         icon: Icons.music_video_rounded,
         color: const Color(0xFF000000),
-        isConnected: true,
+        isConnected: false,
+        isAvailable: false,
       ),
       _PlatformData(
         name: 'LinkedIn',
         description: 'linkedin_description'.tr,
         icon: Icons.business_rounded,
         color: const Color(0xFF0077B5),
-        isConnected: true,
+        isConnected: false,
+        isAvailable: false,
       ),
       _PlatformData(
         name: 'X',
         description: 'x_description'.tr,
         icon: Icons.close_rounded,
         color: const Color(0xFF000000),
-        isConnected: true,
+        isConnected: false,
+        isAvailable: false,
       ),
     ];
 
@@ -188,6 +194,11 @@ class SocialMediaPage extends StatelessWidget {
   StorageService get _storageService => Get.find<StorageService>();
 
   void _handlePlatformTap(_PlatformData platform) {
+    // Only handle tap for available platforms
+    if (!platform.isAvailable) {
+      return;
+    }
+
     HapticFeedback.lightImpact();
     if (_storageService.snapTokenResponse != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -206,6 +217,7 @@ class _PlatformData {
   final IconData icon;
   final Color color;
   final bool isConnected;
+  final bool isAvailable;
 
   _PlatformData({
     required this.name,
@@ -213,6 +225,7 @@ class _PlatformData {
     required this.icon,
     required this.color,
     required this.isConnected,
+    required this.isAvailable,
   });
 }
 
@@ -235,13 +248,17 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+      onEnter: widget.platform.isAvailable
+          ? (_) => setState(() => _isHovered = true)
+          : null,
+      onExit: widget.platform.isAvailable
+          ? (_) => setState(() => _isHovered = false)
+          : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         transform: Matrix4.identity()
-          ..scale(_isHovered ? 1.05 : 1.0)
-          ..rotateZ(_isHovered ? 0.01 : 0.0),
+          ..scale(_isHovered && widget.platform.isAvailable ? 1.05 : 1.0)
+          ..rotateZ(_isHovered && widget.platform.isAvailable ? 0.01 : 0.0),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -249,36 +266,48 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white,
-                Colors.white.withOpacity(0.9),
+                Get.theme.colorScheme.surface,
+                Get.theme.colorScheme.surface.withOpacity(0.9),
               ],
             ),
             boxShadow: [
               BoxShadow(
-                color:
-                    widget.platform.color.withOpacity(_isHovered ? 0.4 : 0.2),
-                blurRadius: _isHovered ? 25 : 15,
-                offset: Offset(0, _isHovered ? 15 : 8),
-                spreadRadius: _isHovered ? 2 : 0,
+                color: widget.platform.isAvailable
+                    ? widget.platform.color.withOpacity(_isHovered ? 0.4 : 0.2)
+                    : Colors.grey.withOpacity(0.1),
+                blurRadius: _isHovered && widget.platform.isAvailable ? 25 : 15,
+                offset: Offset(
+                    0, _isHovered && widget.platform.isAvailable ? 15 : 8),
+                spreadRadius: _isHovered && widget.platform.isAvailable ? 2 : 0,
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Get.theme.colorScheme.shadow.withOpacity(
+                  Get.theme.brightness == Brightness.dark ? 0.3 : 0.05,
+                ),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
             ],
             border: Border.all(
-              color: _isHovered
-                  ? widget.platform.color.withOpacity(0.6)
-                  : Colors.grey.withOpacity(0.1),
-              width: _isHovered ? 2 : 1,
+              color: widget.platform.isAvailable
+                  ? _isHovered
+                      ? widget.platform.color.withOpacity(0.6)
+                      : Get.theme.colorScheme.outline.withOpacity(0.2)
+                  : Get.theme.colorScheme.outline.withOpacity(0.1),
+              width: _isHovered && widget.platform.isAvailable ? 2 : 1,
             ),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
-              onTap: widget.onTap,
+              splashColor: widget.platform.isAvailable
+                  ? widget.platform.color.withOpacity(0.1)
+                  : Colors.transparent,
+              highlightColor: widget.platform.isAvailable
+                  ? widget.platform.color.withOpacity(0.05)
+                  : Colors.transparent,
+              onTap: widget.platform.isAvailable ? widget.onTap : null,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -294,15 +323,26 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            widget.platform.color.withOpacity(0.8),
-                            widget.platform.color.withOpacity(0.6),
-                          ],
+                          colors: widget.platform.isAvailable
+                              ? [
+                                  widget.platform.color.withOpacity(0.8),
+                                  widget.platform.color.withOpacity(0.6),
+                                ]
+                              : [
+                                  Colors.grey.withOpacity(0.4),
+                                  Colors.grey.withOpacity(0.2),
+                                ],
                         ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: widget.platform.color.withOpacity(0.3),
+                            color: widget.platform.isAvailable
+                                ? widget.platform.color.withOpacity(
+                                    Get.theme.brightness == Brightness.dark
+                                        ? 0.4
+                                        : 0.3,
+                                  )
+                                : Colors.grey.withOpacity(0.2),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -311,7 +351,9 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                       child: Icon(
                         widget.platform.icon,
                         size: _isHovered ? 30 : 26,
-                        color: Colors.white,
+                        color: widget.platform.isAvailable
+                            ? Colors.white
+                            : Colors.grey.shade400,
                       ),
                     ),
 
@@ -322,7 +364,9 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                       widget.platform.name,
                       style: Get.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Get.theme.colorScheme.onSurface,
+                        color: widget.platform.isAvailable
+                            ? Get.theme.colorScheme.onSurface
+                            : Get.theme.colorScheme.onSurface.withOpacity(0.4),
                         fontSize: 16,
                         letterSpacing: 0.5,
                       ),
@@ -342,22 +386,36 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                       ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: widget.platform.isConnected
+                          colors: !widget.platform.isAvailable
                               ? [
-                                  const Color(0xFF4CAF50),
-                                  const Color(0xFF45A049),
+                                  Colors.orange.shade400,
+                                  Colors.orange.shade500,
                                 ]
-                              : [
-                                  Colors.grey.shade400,
-                                  Colors.grey.shade500,
-                                ],
+                              : widget.platform.isConnected
+                                  ? [
+                                      const Color(0xFF4CAF50),
+                                      const Color(0xFF45A049),
+                                    ]
+                                  : Get.theme.brightness == Brightness.dark
+                                      ? [
+                                          Get.theme.colorScheme.outline,
+                                          Get.theme.colorScheme.outline
+                                              .withOpacity(0.8),
+                                        ]
+                                      : [
+                                          Colors.grey.shade400,
+                                          Colors.grey.shade500,
+                                        ],
                         ),
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: widget.platform.isConnected
-                                ? const Color(0xFF4CAF50).withOpacity(0.3)
-                                : Colors.grey.withOpacity(0.3),
+                            color: !widget.platform.isAvailable
+                                ? Colors.orange.withOpacity(0.3)
+                                : widget.platform.isConnected
+                                    ? const Color(0xFF4CAF50).withOpacity(0.3)
+                                    : Get.theme.colorScheme.outline
+                                        .withOpacity(0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -367,17 +425,21 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            widget.platform.isConnected
-                                ? Icons.check_circle_rounded
-                                : Icons.pending_rounded,
+                            !widget.platform.isAvailable
+                                ? Icons.schedule_rounded
+                                : widget.platform.isConnected
+                                    ? Icons.check_circle_rounded
+                                    : Icons.pending_rounded,
                             color: Colors.white,
                             size: 16,
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            widget.platform.isConnected
-                                ? 'Connected'
-                                : 'Not Connected',
+                            !widget.platform.isAvailable
+                                ? 'Coming Soon'
+                                : widget.platform.isConnected
+                                    ? 'Connected'
+                                    : 'Not Connected',
                             style: Get.textTheme.bodySmall?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -397,9 +459,16 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                       duration: const Duration(milliseconds: 300),
                       opacity: _isHovered ? 1.0 : 0.6,
                       child: Text(
-                        'Tap to manage',
+                        widget.platform.isAvailable
+                            ? 'Tap to manage'
+                            : 'Stay tuned',
                         style: Get.textTheme.bodySmall?.copyWith(
-                          color: widget.platform.color,
+                          color: widget.platform.isAvailable
+                              ? Get.theme.brightness == Brightness.dark
+                                  ? widget.platform.color.withOpacity(0.8)
+                                  : widget.platform.color
+                              : Get.theme.colorScheme.onSurface
+                                  .withOpacity(0.4),
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
                         ),

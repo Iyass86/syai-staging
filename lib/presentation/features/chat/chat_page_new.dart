@@ -443,121 +443,158 @@ class ChatPage extends GetView<ChatController> {
   }
 
   Widget _buildMessagesList(ColorScheme colorScheme) {
-    return Obx(() => Container(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isDesktop = constraints.maxWidth > 1200;
+        final isTablet =
+            constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
+
+        // Web padding for better desktop/tablet experience (same as empty state)
+        final webPadding = EdgeInsets.symmetric(
+          horizontal: isDesktop
+              ? constraints.maxWidth * 0.15 // 15% padding on desktop
+              : isTablet
+                  ? constraints.maxWidth * 0.1 // 10% padding on tablet
+                  : 0, // No extra padding on mobile
+        );
+
+        return Container(
           color: colorScheme.surface,
-          child: ListView.builder(
-            controller: controller.scrollController,
-            padding: const EdgeInsets.all(16),
-            itemCount: controller.messages.length,
-            // Performance optimizations
-            cacheExtent: 500,
-            addAutomaticKeepAlives: false,
-            addRepaintBoundaries: true,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              final message = controller.messages[index];
-              final isUser = message.message?.isFromCurrentUser ?? true;
-              final messageText = message.message?.content ?? '';
-
-              return Container(
-                margin: const EdgeInsets.only(bottom: 24),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!isUser) ...[
-                      // AI Avatar
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: colorScheme.primary,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Icon(
-                          Icons.psychology_alt_rounded,
-                          size: 18,
-                          color: colorScheme.onPrimary,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                    ],
-
-                    // Message content
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: isUser
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
-                        children: [
-                          // Label
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 4,
-                              left: isUser ? 0 : 0,
-                              right: isUser ? 0 : 0,
-                            ),
-                            child: Text(
-                              isUser ? 'User' : 'AI Assistant',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: colorScheme.onSurface.withOpacity(0.6),
-                              ),
-                            ),
-                          ),
-
-                          // Message bubble
-                          Container(
-                            padding: EdgeInsets.all(16),
-                            constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isUser
-                                  ? colorScheme.primary
-                                  : colorScheme.surfaceVariant.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: message.message?.type == 'ai_thinking'
-                                ? _buildThinkingText(colorScheme)
-                                : Text(
-                                    messageText,
-                                    style: TextStyle(
-                                      color: isUser
-                                          ? colorScheme.onPrimary
-                                          : colorScheme.onSurface,
-                                      fontSize: 16,
-                                      height: 1.4,
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    if (isUser) ...[
-                      SizedBox(width: 12),
-                      // User Avatar
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Icon(
-                          Icons.person,
-                          size: 18,
-                          color: colorScheme.onSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
+          child: Padding(
+            padding: webPadding,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: isDesktop
+                      ? 800
+                      : isTablet
+                          ? 600
+                          : double.infinity,
                 ),
-              );
-            },
+                child: Obx(() => ListView.builder(
+                      controller: controller.scrollController,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: controller.messages.length,
+                      // Performance optimizations
+                      cacheExtent: 500,
+                      addAutomaticKeepAlives: false,
+                      addRepaintBoundaries: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final message = controller.messages[index];
+                        final isUser =
+                            message.message?.isFromCurrentUser ?? true;
+                        final messageText = message.message?.content ?? '';
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 24),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (!isUser) ...[
+                                // AI Avatar
+                                Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Icon(
+                                    Icons.psychology_alt_rounded,
+                                    size: 18,
+                                    color: colorScheme.onPrimary,
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                              ],
+
+                              // Message content
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: isUser
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  children: [
+                                    // Label
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: 4,
+                                        left: isUser ? 0 : 0,
+                                        right: isUser ? 0 : 0,
+                                      ),
+                                      child: Text(
+                                        isUser ? 'User' : 'AI Assistant',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: colorScheme.onSurface
+                                              .withOpacity(0.6),
+                                        ),
+                                      ),
+                                    ),
+
+                                    // Message bubble
+                                    Container(
+                                      padding: EdgeInsets.all(16),
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isUser
+                                            ? colorScheme.primary
+                                            : colorScheme.surfaceVariant
+                                                .withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child:
+                                          message.message?.type == 'ai_thinking'
+                                              ? _buildThinkingText(colorScheme)
+                                              : Text(
+                                                  messageText,
+                                                  style: TextStyle(
+                                                    color: isUser
+                                                        ? colorScheme.onPrimary
+                                                        : colorScheme.onSurface,
+                                                    fontSize: 16,
+                                                    height: 1.4,
+                                                  ),
+                                                ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              if (isUser) ...[
+                                SizedBox(width: 12),
+                                // User Avatar
+                                Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.secondary,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 18,
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        );
+                      },
+                    )),
+              ),
+            ),
           ),
-        ));
+        );
+      },
+    );
   }
 
   Widget _buildMessageInputCard(

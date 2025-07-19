@@ -282,8 +282,8 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.white,
-              Colors.white.withOpacity(0.9),
+              colorScheme.surface,
+              colorScheme.surface.withOpacity(0.9),
             ],
           ),
           boxShadow: [
@@ -294,7 +294,7 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
             ),
           ],
           border: Border.all(
-            color: colorScheme.primary.withOpacity(0.1),
+            color: colorScheme.outline.withOpacity(0.2),
             width: 1,
           ),
         ),
@@ -348,8 +348,8 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.white,
-              Colors.white.withOpacity(0.9),
+              colorScheme.surface,
+              colorScheme.surface.withOpacity(0.9),
             ],
           ),
           boxShadow: [
@@ -360,7 +360,7 @@ class _SnapAccountsPageState extends State<SnapAccountsPage>
             ),
           ],
           border: Border.all(
-            color: colorScheme.primary.withOpacity(0.1),
+            color: colorScheme.outline.withOpacity(0.2),
             width: 1,
           ),
         ),
@@ -577,8 +577,8 @@ class _AdAccountGridCardState extends State<_AdAccountGridCard> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white,
-                Colors.white.withOpacity(0.9),
+                widget.colorScheme.surface,
+                widget.colorScheme.surface.withOpacity(0.9),
               ],
             ),
             boxShadow: [
@@ -590,7 +590,9 @@ class _AdAccountGridCardState extends State<_AdAccountGridCard> {
                 spreadRadius: _isHovered ? 2 : 0,
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: widget.colorScheme.shadow.withOpacity(
+                  widget.colorScheme.brightness == Brightness.dark ? 0.3 : 0.05,
+                ),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -598,7 +600,7 @@ class _AdAccountGridCardState extends State<_AdAccountGridCard> {
             border: Border.all(
               color: _isHovered
                   ? (isActive ? Colors.green : Colors.orange).withOpacity(0.6)
-                  : Colors.grey.withOpacity(0.1),
+                  : widget.colorScheme.outline.withOpacity(0.2),
               width: _isHovered ? 2 : 1,
             ),
           ),
@@ -606,6 +608,10 @@ class _AdAccountGridCardState extends State<_AdAccountGridCard> {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
+              splashColor:
+                  (isActive ? Colors.green : Colors.orange).withOpacity(0.1),
+              highlightColor:
+                  (isActive ? Colors.green : Colors.orange).withOpacity(0.05),
               onTap: widget.onTap,
               child: Padding(
                 padding: const EdgeInsets.all(20),
