@@ -101,8 +101,8 @@ class SnapAuthController extends GetxController {
 
   Future<void> generateAccessToken() async {
     Map<String, dynamic> snapAuth = await getSnapAuth();
-    // String authCode = await _storageService.getAuthCode();
-    String authCode = "FqQ92yZ9wR6Kk24H06J9QKB97QVwRBXHFNaAeMWkxvo";
+    String authCode = await _storageService.getAuthCode();
+    //String authCode = "FqQ92yZ9wR6Kk24H06J9QKB97QVwRBXHFNaAeMWkxvo";
     if (snapAuth.isEmpty) {
       _showErrorMessage('Please fill in all required fields');
       return;
