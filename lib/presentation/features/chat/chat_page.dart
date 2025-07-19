@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/controllers/chat_controller.dart';
-import 'widgets/chat_message_list.dart';
+import 'widgets/chat_message_widget.dart';
 import '../../shared_widgets/theme_toggle_button.dart';
 import 'widgets/message_display_container.dart';
 import 'widgets/typewriter_text.dart';
@@ -240,7 +240,6 @@ class ChatPage extends GetView<ChatController> {
                                 ? 28
                                 : 24),
 
-                    // Welcome title with smooth animation
                     SmoothMessageContainer(
                       duration: const Duration(milliseconds: 1000),
                       child: Text(
@@ -266,7 +265,6 @@ class ChatPage extends GetView<ChatController> {
                                 ? 14
                                 : 12),
 
-                    // Subtitle with smooth animation
                     SmoothMessageContainer(
                       duration: const Duration(milliseconds: 1200),
                       child: Text(
@@ -645,14 +643,209 @@ class ChatPage extends GetView<ChatController> {
 
   Widget _buildMessagesList(ColorScheme colorScheme) {
     return Obx(() {
-      return Container(
-        color: colorScheme.surface,
-        child: ChatMessageList(
-          controller: controller,
-          scrollController: controller.scrollController,
-          messages: controller.messages,
-          isWaitingForResponse: controller.isWaitingForResponse.value,
-        ),
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 1200;
+          final isTablet =
+              constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
+
+          return Container(
+            color: colorScheme.surface,
+            child: SingleChildScrollView(
+              controller: controller.scrollController,
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop
+                    ? 48
+                    : isTablet
+                        ? 32
+                        : 24,
+                vertical: isDesktop
+                    ? 32
+                    : isTablet
+                        ? 28
+                        : 24,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: isDesktop
+                      ? 800
+                      : isTablet
+                          ? 600
+                          : double.infinity,
+                  minHeight: constraints.maxHeight -
+                      (isDesktop
+                          ? 64
+                          : isTablet
+                              ? 56
+                              : 48), // Account for padding
+                ),
+                child: Column(
+                  children: [
+                    // Messages list with smooth animations
+                    ...controller.messages.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final message = entry.value as dynamic;
+                      final isLastMessage =
+                          index == controller.messages.length - 1;
+
+                      return SmoothMessageContainer(
+                        duration: Duration(milliseconds: 300 + (index * 100)),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            bottom: isDesktop
+                                ? 20
+                                : isTablet
+                                    ? 18
+                                    : 16,
+                          ),
+                          child: ChatMessageWidget(
+                            message: message,
+                            isLoading: isLastMessage &&
+                                controller.isWaitingForResponse.value,
+                            isLastAiMessage:
+                                !controller.isWaitingForResponse.value &&
+                                    controller.messages.isNotEmpty &&
+                                    (controller.messages.last as dynamic).id ==
+                                        message.id &&
+                                    (message as dynamic).lastMessageFromAi,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+
+                    // Enhanced typing indicator for messages view
+                    if (controller.isWaitingForResponse.value)
+                      SmoothMessageContainer(
+                        duration: const Duration(milliseconds: 400),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: EdgeInsets.only(
+                            bottom: isDesktop
+                                ? 24
+                                : isTablet
+                                    ? 20
+                                    : 16,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isDesktop
+                                ? 24
+                                : isTablet
+                                    ? 20
+                                    : 16,
+                            vertical: isDesktop
+                                ? 16
+                                : isTablet
+                                    ? 14
+                                    : 12,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                colorScheme.primaryContainer.withOpacity(0.3),
+                                colorScheme.primaryContainer.withOpacity(0.1),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              isDesktop
+                                  ? 24
+                                  : isTablet
+                                      ? 22
+                                      : 20,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: colorScheme.primary.withOpacity(0.1),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: isDesktop
+                                    ? 40
+                                    : isTablet
+                                        ? 36
+                                        : 32,
+                                height: isDesktop
+                                    ? 40
+                                    : isTablet
+                                        ? 36
+                                        : 32,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      colorScheme.primary,
+                                      colorScheme.primary.withOpacity(0.8),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    isDesktop
+                                        ? 12
+                                        : isTablet
+                                            ? 11
+                                            : 10,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.psychology_alt_rounded,
+                                  size: isDesktop
+                                      ? 20
+                                      : isTablet
+                                          ? 18
+                                          : 16,
+                                  color: colorScheme.onPrimary,
+                                ),
+                              ),
+                              SizedBox(
+                                  width: isDesktop
+                                      ? 16
+                                      : isTablet
+                                          ? 14
+                                          : 12),
+                              EnhancedThinkingIndicator(
+                                color: colorScheme.primary,
+                                text: '',
+                                size: isDesktop
+                                    ? 8
+                                    : isTablet
+                                        ? 7
+                                        : 6,
+                              ),
+                              SizedBox(
+                                  width: isDesktop
+                                      ? 12
+                                      : isTablet
+                                          ? 10
+                                          : 8),
+                              Text(
+                                'SyAi يكتب رد...',
+                                style: TextStyle(
+                                  color: colorScheme.onSurface.withOpacity(0.8),
+                                  fontSize: isDesktop
+                                      ? 16
+                                      : isTablet
+                                          ? 15
+                                          : 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       );
     });
   }
