@@ -645,14 +645,45 @@ class ChatPage extends GetView<ChatController> {
 
   Widget _buildMessagesList(ColorScheme colorScheme) {
     return Obx(() {
-      return Container(
-        color: colorScheme.surface,
-        child: ChatMessageList(
-          controller: controller,
-          scrollController: controller.scrollController,
-          messages: controller.messages,
-          isWaitingForResponse: controller.isWaitingForResponse.value,
-        ),
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 1200;
+          final isTablet =
+              constraints.maxWidth > 768 && constraints.maxWidth <= 1200;
+
+          // Web padding for better desktop/tablet experience (same as empty state)
+          final webPadding = EdgeInsets.symmetric(
+            horizontal: isDesktop
+                ? constraints.maxWidth * 0.15 // 15% padding on desktop
+                : isTablet
+                    ? constraints.maxWidth * 0.1 // 10% padding on tablet
+                    : 0, // No extra padding on mobile
+          );
+
+          return Container(
+            color: colorScheme.surface,
+            child: Padding(
+              padding: webPadding,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: isDesktop
+                        ? 800
+                        : isTablet
+                            ? 600
+                            : double.infinity,
+                  ),
+                  child: ChatMessageList(
+                    controller: controller,
+                    scrollController: controller.scrollController,
+                    messages: controller.messages,
+                    isWaitingForResponse: controller.isWaitingForResponse.value,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       );
     });
   }
