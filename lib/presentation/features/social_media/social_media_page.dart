@@ -249,8 +249,8 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white,
-                Colors.white.withOpacity(0.9),
+                Get.theme.colorScheme.surface,
+                Get.theme.colorScheme.surface.withOpacity(0.9),
               ],
             ),
             boxShadow: [
@@ -262,7 +262,9 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                 spreadRadius: _isHovered ? 2 : 0,
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Get.theme.colorScheme.shadow.withOpacity(
+                  Get.theme.brightness == Brightness.dark ? 0.3 : 0.05,
+                ),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -270,7 +272,7 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
             border: Border.all(
               color: _isHovered
                   ? widget.platform.color.withOpacity(0.6)
-                  : Colors.grey.withOpacity(0.1),
+                  : Get.theme.colorScheme.outline.withOpacity(0.2),
               width: _isHovered ? 2 : 1,
             ),
           ),
@@ -278,6 +280,8 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
+              splashColor: widget.platform.color.withOpacity(0.1),
+              highlightColor: widget.platform.color.withOpacity(0.05),
               onTap: widget.onTap,
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -302,7 +306,11 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: widget.platform.color.withOpacity(0.3),
+                            color: widget.platform.color.withOpacity(
+                              Get.theme.brightness == Brightness.dark
+                                  ? 0.4
+                                  : 0.3,
+                            ),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -347,17 +355,24 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                                   const Color(0xFF4CAF50),
                                   const Color(0xFF45A049),
                                 ]
-                              : [
-                                  Colors.grey.shade400,
-                                  Colors.grey.shade500,
-                                ],
+                              : Get.theme.brightness == Brightness.dark
+                                  ? [
+                                      Get.theme.colorScheme.outline,
+                                      Get.theme.colorScheme.outline
+                                          .withOpacity(0.8),
+                                    ]
+                                  : [
+                                      Colors.grey.shade400,
+                                      Colors.grey.shade500,
+                                    ],
                         ),
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
                             color: widget.platform.isConnected
                                 ? const Color(0xFF4CAF50).withOpacity(0.3)
-                                : Colors.grey.withOpacity(0.3),
+                                : Get.theme.colorScheme.outline
+                                    .withOpacity(0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -399,7 +414,9 @@ class _PlatformGridCardState extends State<_PlatformGridCard> {
                       child: Text(
                         'Tap to manage',
                         style: Get.textTheme.bodySmall?.copyWith(
-                          color: widget.platform.color,
+                          color: Get.theme.brightness == Brightness.dark
+                              ? widget.platform.color.withOpacity(0.8)
+                              : widget.platform.color,
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
                         ),
